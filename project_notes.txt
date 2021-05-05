@@ -1,0 +1,100 @@
+#1 Creation of the RStudio project, init Git repository, import data through Haven library
+
+Usage of Haven library to import .SAV data into R studio (file format: SPSS, file extention: ".SAV")
+Data can be found under "/data/Data/" path, each subfolder contains several .SAV datasets depending on the time slot
+
+The collected data has the following structure:
+- ID: patient ID
+- bdatalg
+- bweight
+- wstab5y
+- wcha5y
+- bwchrea
+- bwdiet
+- bdietres
+- educat
+- eduother
+- bsmoker
+- yrqtsmo
+- ageqtsmo
+- agestsmo
+- smokeyr
+- bsmokepd
+- balcohol
+- balcpv
+- balcwhen
+- balcoth
+- drugs
+- menstage
+- bmenreg
+- menstcyc
+- pill
+- pilstage
+- pillyr
+- pilbrand
+- bpilluse
+- pilqtage
+- pregno
+- pregage
+- bmencur
+- menoage
+- bmenocau
+- bmenoth
+- bhormone
+- bhormrea
+- bhormdu
+- bhormtyp
+- bfat1
+- bfat2
+- bfat3
+- bfat4
+- bfat5
+- bfat6
+- bfat7
+- bfat8
+- bfat9
+- bfat10
+- bfat11
+- bfat12
+- bfat13
+- bfat14
+- bfat15
+- bfat16
+- bfat17
+- bfat18
+- bfat19
+- bfat20
+- GROUP
+- TRUE
+- Lenght_avg
+- ageatinclusion
+- fat2recoded
+- fat5recoded
+- fat9recoded
+- fat10recoded
+- fat13recoded
+- fat14recoded
+- fat16recoded
+- fat16recoded
+- fat17recoded
+- fat18recoded
+- fat19recoded
+- GeneralFatigueT0
+- PhysicalFatigueT0
+- ReducedActivityT0
+- ReducedMotivationT0
+- MentalFatigueT0
+- AdjuvantvsNeo
+- T_stage
+- N_stage
+- M_stage
+- OK
+- date_OK
+- RT
+- CT
+- CT_Adjuvantv_neo
+- Type_CT
+- HT
+- IM
+
+Import of Data in RStudio and starting to read documentation - 2 hours
