@@ -1,4 +1,6 @@
 library(haven)
+# library(dplyr)
+library(tidyverse)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
@@ -54,8 +56,9 @@ T4_hads = read_sav(path_T4_hads)
 T4_qol_contr = read_sav(path_T4_qol_contr)
 T4_qol_pt = read_sav(path_T4_qol_pt)
 
+# translate useful columns to English
 
-
-
+baseline = rename(baseline, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
+baseline_dataset = baseline %>% select(fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment)
 
 

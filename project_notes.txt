@@ -98,3 +98,13 @@ The collected data has the following structure:
 - IM
 
 Import of Data in RStudio and starting to read documentation - 2 hours
+
+#2 Translate Data and first analysis to undestand which variables might be more significant
+
+Hypothesis: smoking equally dangerous at every age, so we only consider the amount of years,
+	education level and employment situation not relevant,
+	alcohol consume per week
+
+1.5 hours
+
+#3 
