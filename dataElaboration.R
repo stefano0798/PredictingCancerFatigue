@@ -59,6 +59,8 @@ T4_qol_pt = read_sav(path_T4_qol_pt)
 # translate useful columns to English
 
 baseline = rename(baseline, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
-baseline_dataset = baseline %>% select(fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment)
+baseline_dataset = baseline %>% select(ID, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment) %>% mutate("BMI" = (weight/((1.68)^2))) %>% select(ID, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment)
 
+T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
 
+dataset_baseline_t3 = inner_join(baseline_dataset, T3_hads_datainterest, by=c("ID"="RESPNO"))
