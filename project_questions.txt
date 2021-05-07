@@ -1,0 +1,10 @@
+Questions for the meeting:
+1) Ask about the correctness of the data selected. Should we consider more data?
+
+2) Ask about the 5 fatigue mesurements contained into the baseline table. Are they referred to the beginning of the chemio
+or to the 12 months period after the cancer treatment?
+
+3)Are the RESPNOs from the "hads" table referred to the people's IDs in the "baseline" table?
+
+4)As the height is missing in the baseline table and we need to compute the BMI(Body Mass Index), we considered the average height of women in Netherland, may this work?
+(lenght value what is it?)
