@@ -112,7 +112,7 @@ Hypothesis: smoking equally dangerous at every age, so we only consider the amou
 
 #3 Second data analysis
 
-Given the above selected data, we will build a RandomForest model to predict the 5 values for the fatigue. As classical RF models have only one output value, we will build 5 models, one for each fatigue value at t4, assuming that the 5 values are independent (general, physical, reducedActivity, reducedMotivation,  .
+Given the above selected data, we will build a RandomForest model to predict the 5 values for the fatigue. As classical RF models have only one output value, we will build 5 models, one for each fatigue value at t4, assuming that the 5 values are independent (general, physical, reducedActivity, reducedMotivation, mental).
 Deleting records with TRUE set not 1, as they don't give consent to be included in the study.
-Then we will cross the physical data of the user (baseline) with some questionnaire answers given at T3, hence 6 months after the chemo. Give this data, we will try to predict CRF values for T4, aka the long term fatigue.
+Then we will cross the physical data of the user (baseline) with some questionnaire answers given at T3, hence 6 months after the chemo. Give this data, we will try to predict CRF values for T4, aka the long term fatigue. - 2.5 hours
 
