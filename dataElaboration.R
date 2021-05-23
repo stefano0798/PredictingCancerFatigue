@@ -68,3 +68,7 @@ dataset_with_selected_t3 = inner_join(baseline_dataset, T3_hads_datainterest, by
 dataset_with_selected_t3 = mutate(dataset_with_selected_t3, t3_tense = t3_tense/3, t3_anxious = t3_anxious/3, t3_worried = t3_worried/3, t3_panic = t3_panic/3)
 
 T4_hads_datainterest = T4_hads %>% select(RESPNO, EHADS1, EHADS3, EHADS5, EHADS13) %>% rename(t4_tense = EHADS1, t4_anxious = EHADS3, t4_worried = EHADS5, t4_panic = EHADS13)
+
+dataset_t3_t4 = inner_join(dataset_with_selected_t3, T4_hads_datainterest, by=c("ID"="RESPNO"))
+
+dataset_t3_t4 = mutate(dataset_t3_t4,t4_tense=t4_tense/3,  t4_anxious=t4_anxious/3, t4_worried=t4_worried/3, t4_panic=t4_panic/3)
