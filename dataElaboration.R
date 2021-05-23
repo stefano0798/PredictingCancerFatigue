@@ -58,9 +58,13 @@ T4_qol_pt = read_sav(path_T4_qol_pt)
 
 # translate useful columns to English
 
-baseline = rename(baseline, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
-baseline_dataset = baseline %>% select(ID, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment) %>% mutate("BMI" = (weight/((1.68)^2))) %>% select(ID, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment)
+baseline = rename(baseline, height = Length_avg, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
+baseline_dataset = baseline %>% select(ID, height, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment)
 
 T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
 
-dataset_baseline_t3 = inner_join(baseline_dataset, T3_hads_datainterest, by=c("ID"="RESPNO"))
+dataset_with_selected_t3 = inner_join(baseline_dataset, T3_hads_datainterest, by=c("ID"="RESPNO"))
+
+dataset_with_selected_t3 = mutate(dataset_with_selected_t3, t3_tense = t3_tense/3, t3_anxious = t3_anxious/3, t3_worried = t3_worried/3, t3_panic = t3_panic/3)
+
+T4_hads_datainterest = T4_hads %>% select(RESPNO, EHADS1, EHADS3, EHADS5, EHADS13) %>% rename(t4_tense = EHADS1, t4_anxious = EHADS3, t4_worried = EHADS5, t4_panic = EHADS13)
