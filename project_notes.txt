@@ -116,3 +116,8 @@ Given the above selected data, we will build a RandomForest model to predict the
 Deleting records with TRUE set not 1, as they don't give consent to be included in the study.
 Then we will cross the physical data of the user (baseline) with some questionnaire answers given at T3, hence 6 months after the chemo. Give this data, we will try to predict CRF values for T4, aka the long term fatigue. - 2.5 hours
 
+
+Cancer stages
+https://www.webmd.com/cancer/cancer-stages#:~:text=Stage%20I%20means%20the%20cancer,other%20parts%20of%20your%20body.
+
+

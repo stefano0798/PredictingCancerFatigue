@@ -15,6 +15,19 @@ baseline = read_sav(pathBaseline)
 pathMedical = file.path(data_path, "Medical data.sav")
 medicalData = read_sav(pathMedical)
 
+medicalData = medicalData %>% select ("ID", "Staging", "OK", "RT", "CT", "HT") %>% rename(Surgery = OK, Radiotherapy = RT, Chemotherapy = CT, Hormonetherapy = HT)
+# rm data with no stage
+medicalData = medicalData[!(is.na(medicalData$Staging) | medicalData$Staging=="" | medicalData$Staging>4), ]
+medicalData[medicalData==""] = NA
+#normalize fileds of medical data
+medicalData$Staging[medicalData$Staging=="1"] = 1/6
+medicalData$Staging[medicalData$Staging=="2"] = 2/6
+medicalData$Staging[medicalData$Staging=="3"] = 3/6
+medicalData$Staging[medicalData$Staging=="3A"] = 3/6
+medicalData$Staging[medicalData$Staging=="3B"] = 4/6
+medicalData$Staging[medicalData$Staging=="3C"] = 5/6
+medicalData$Staging[medicalData$Staging=="4"] = 6/6
+
 # read datasets from T1
 path_T1_hads = file.path(T1_path, "T1_hads.sav")
 path_T1_hads_2 = file.path(T1_path, "T1_hads_2.sav")
@@ -100,6 +113,13 @@ dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT17 = as.factor(EFAT
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT18 = as.factor(EFAT18)) %>% mutate(EFAT18 = as.double(EFAT18)) %>% mutate (EFAT18 = (EFAT18-1)/4)
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT19 = as.factor(EFAT19)) %>% mutate(EFAT19 = as.double(EFAT19)) %>% mutate (EFAT19 = (EFAT19-1)/4)
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT20 = as.factor(EFAT20)) %>% mutate(EFAT20 = as.double(EFAT20)) %>% mutate (EFAT20 = (EFAT20-1)/4)
+
+#full join dataset_with_fatigues and medicaldata
+#change Ja/Nee with booleans
+#keep groups 0/5
+# for people not in medical data, set NAs
+
+dataset_with_fatigues = full_join(dataset_with_fatigues, medicalData, )
 
 
 dataset_model_1 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT1)
