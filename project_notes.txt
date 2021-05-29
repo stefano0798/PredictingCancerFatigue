@@ -120,4 +120,25 @@ Then we will cross the physical data of the user (baseline) with some questionna
 Cancer stages
 https://www.webmd.com/cancer/cancer-stages#:~:text=Stage%20I%20means%20the%20cancer,other%20parts%20of%20your%20body.
 
+Cancer 3C
+https://www.nationalbreastcancer.org/breast-cancer-stage-
+
+0 -> 0/6
+1 -> 1/6
+2 -> 2/6
+3A -> 3/6
+3B -> 4/6
+3C -> 5/6
+4 -> 6/6
+
+
+ER and PR positive/negative
+https://www.cancer.org/cancer/breast-cancer/understanding-a-breast-cancer-diagnosis/breast-cancer-hormone-receptor-status.html
+
+HER2 positivity
+https://www.cancer.org/cancer/breast-cancer/understanding-a-breast-cancer-diagnosis/breast-cancer-hormone-receptor-status.
+
+PERIOD TREATEMENT value not considered due to missing values ~96%
+
+CUTE https://www.google.com/url?sa=i&url=https%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FFile%3ACyclopes_didactylus-297-13_(UR1).jpg&psig=AOvVaw3zdsJv93J3jKNbj9Wbg3v1&ust=1622388286423000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJiv5r2Z7_ACFQAAAAAdAAAAABAI
 

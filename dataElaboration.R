@@ -1,6 +1,7 @@
 library(haven)
 # library(dplyr)
 library(tidyverse)
+library(randomForest)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
@@ -27,6 +28,8 @@ medicalData$Staging[medicalData$Staging=="3A"] = 3/6
 medicalData$Staging[medicalData$Staging=="3B"] = 4/6
 medicalData$Staging[medicalData$Staging=="3C"] = 5/6
 medicalData$Staging[medicalData$Staging=="4"] = 6/6
+
+medicalData = medicalData %>% mutate(Staging = as.double(Staging))
 
 # read datasets from T1
 path_T1_hads = file.path(T1_path, "T1_hads.sav")
@@ -75,8 +78,8 @@ T4_qol_pt = read_sav(path_T4_qol_pt)
 
 # translate useful columns to English
 
-baseline = rename(baseline, height = Length_avg, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
-baseline_dataset = baseline %>% select(ID, height, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP)
+baseline = rename(baseline, age = ageatinclusion, height = Length_avg, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
+baseline_dataset = baseline %>% select(ID, height, age, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, age, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP)
 
 T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
 
@@ -93,33 +96,33 @@ dataset_t3_t4 = mutate(dataset_t3_t4,t4_tense=t4_tense/3,  t4_anxious=t4_anxious
 all_t4_fatigues = rbind(T4_gq_pt, T4_gq_contr) %>% select("RESPNO", "EFAT1","EFAT2","EFAT3","EFAT4","EFAT5","EFAT6","EFAT7","EFAT8","EFAT9","EFAT10","EFAT11","EFAT12","EFAT13","EFAT14","EFAT15","EFAT16","EFAT17","EFAT18","EFAT19","EFAT20")
 
 dataset_with_fatigues = inner_join(dataset_t3_t4, all_t4_fatigues, by=c("ID"="RESPNO"))
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT1 = as.factor(EFAT1)) %>% mutate(EFAT1 = as.double(EFAT1)) %>% mutate (EFAT1 = (EFAT1-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT2 = as.factor(EFAT2)) %>% mutate(EFAT2 = as.double(EFAT2)) %>% mutate (EFAT2 = (EFAT2-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT3 = as.factor(EFAT3)) %>% mutate(EFAT3 = as.double(EFAT3)) %>% mutate (EFAT3 = (EFAT3-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT4 = as.factor(EFAT4)) %>% mutate(EFAT4 = as.double(EFAT4)) %>% mutate (EFAT4 = (EFAT4-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT5 = as.factor(EFAT5)) %>% mutate(EFAT5 = as.double(EFAT5)) %>% mutate (EFAT5 = (EFAT5-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT6 = as.factor(EFAT6)) %>% mutate(EFAT6 = as.double(EFAT6)) %>% mutate (EFAT6 = (EFAT6-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT7 = as.factor(EFAT7)) %>% mutate(EFAT7 = as.double(EFAT7)) %>% mutate (EFAT7 = (EFAT7-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT8 = as.factor(EFAT8)) %>% mutate(EFAT8 = as.double(EFAT8)) %>% mutate (EFAT8 = (EFAT8-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT9 = as.factor(EFAT9)) %>% mutate(EFAT9 = as.double(EFAT9)) %>% mutate (EFAT9 = (EFAT9-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT10 = as.factor(EFAT10)) %>% mutate(EFAT10 = as.double(EFAT10)) %>% mutate (EFAT10 = (EFAT10-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT11 = as.factor(EFAT11)) %>% mutate(EFAT11 = as.double(EFAT11)) %>% mutate (EFAT11 = (EFAT11-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT12 = as.factor(EFAT12)) %>% mutate(EFAT12 = as.double(EFAT12)) %>% mutate (EFAT12 = (EFAT12-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT13 = as.factor(EFAT13)) %>% mutate(EFAT13 = as.double(EFAT13)) %>% mutate (EFAT13 = (EFAT13-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT14 = as.factor(EFAT14)) %>% mutate(EFAT14 = as.double(EFAT14)) %>% mutate (EFAT14 = (EFAT14-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT15 = as.factor(EFAT15)) %>% mutate(EFAT15 = as.double(EFAT15)) %>% mutate (EFAT15 = (EFAT15-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT16 = as.factor(EFAT16)) %>% mutate(EFAT16 = as.double(EFAT16)) %>% mutate (EFAT16 = (EFAT16-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT17 = as.factor(EFAT17)) %>% mutate(EFAT17 = as.double(EFAT17)) %>% mutate (EFAT17 = (EFAT17-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT18 = as.factor(EFAT18)) %>% mutate(EFAT18 = as.double(EFAT18)) %>% mutate (EFAT18 = (EFAT18-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT19 = as.factor(EFAT19)) %>% mutate(EFAT19 = as.double(EFAT19)) %>% mutate (EFAT19 = (EFAT19-1)/4)
-dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT20 = as.factor(EFAT20)) %>% mutate(EFAT20 = as.double(EFAT20)) %>% mutate (EFAT20 = (EFAT20-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT1 = as.factor(EFAT1)) %>% mutate(EFAT1 = as.double(EFAT1)) # %>% mutate (EFAT1 = (EFAT1-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT2 = as.factor(EFAT2)) %>% mutate(EFAT2 = as.double(EFAT2)) # %>% mutate (EFAT2 = (EFAT2-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT3 = as.factor(EFAT3)) %>% mutate(EFAT3 = as.double(EFAT3)) # %>% mutate (EFAT3 = (EFAT3-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT4 = as.factor(EFAT4)) %>% mutate(EFAT4 = as.double(EFAT4)) # %>% mutate (EFAT4 = (EFAT4-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT5 = as.factor(EFAT5)) %>% mutate(EFAT5 = as.double(EFAT5)) # %>% mutate (EFAT5 = (EFAT5-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT6 = as.factor(EFAT6)) %>% mutate(EFAT6 = as.double(EFAT6)) # %>% mutate (EFAT6 = (EFAT6-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT7 = as.factor(EFAT7)) %>% mutate(EFAT7 = as.double(EFAT7)) # %>% mutate (EFAT7 = (EFAT7-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT8 = as.factor(EFAT8)) %>% mutate(EFAT8 = as.double(EFAT8)) # %>% mutate (EFAT8 = (EFAT8-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT9 = as.factor(EFAT9)) %>% mutate(EFAT9 = as.double(EFAT9)) # %>% mutate (EFAT9 = (EFAT9-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT10 = as.factor(EFAT10)) %>% mutate(EFAT10 = as.double(EFAT10)) # %>% mutate (EFAT10 = (EFAT10-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT11 = as.factor(EFAT11)) %>% mutate(EFAT11 = as.double(EFAT11)) # %>% mutate (EFAT11 = (EFAT11-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT12 = as.factor(EFAT12)) %>% mutate(EFAT12 = as.double(EFAT12)) # %>% mutate (EFAT12 = (EFAT12-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT13 = as.factor(EFAT13)) %>% mutate(EFAT13 = as.double(EFAT13)) # %>% mutate (EFAT13 = (EFAT13-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT14 = as.factor(EFAT14)) %>% mutate(EFAT14 = as.double(EFAT14)) # %>% mutate (EFAT14 = (EFAT14-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT15 = as.factor(EFAT15)) %>% mutate(EFAT15 = as.double(EFAT15)) # %>% mutate (EFAT15 = (EFAT15-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT16 = as.factor(EFAT16)) %>% mutate(EFAT16 = as.double(EFAT16)) # %>% mutate (EFAT16 = (EFAT16-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT17 = as.factor(EFAT17)) %>% mutate(EFAT17 = as.double(EFAT17)) # %>% mutate (EFAT17 = (EFAT17-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT18 = as.factor(EFAT18)) %>% mutate(EFAT18 = as.double(EFAT18)) # %>% mutate (EFAT18 = (EFAT18-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT19 = as.factor(EFAT19)) %>% mutate(EFAT19 = as.double(EFAT19)) # %>% mutate (EFAT19 = (EFAT19-1)/4)
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT20 = as.factor(EFAT20)) %>% mutate(EFAT20 = as.double(EFAT20)) # %>% mutate (EFAT20 = (EFAT20-1)/4)
+
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(age = as.integer(age))
 
 #full join dataset_with_fatigues and medicaldata
-#change Ja/Nee with booleans
-#keep groups 0/5
-# for people not in medical data, set NAs
-
 dataset_with_fatigues = left_join(dataset_with_fatigues, medicalData, by=c("ID"="ID"))
+
+#change Ja/Nee with booleans and for people not in medical data, set NAs
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(Staging = as.double(Staging)) %>% mutate(Staging = if_else(is.na(Staging), 0.0, Staging))
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(Surgery = if_else(is.na(Surgery), 'Nee', Surgery)) %>% mutate(Surgery = if_else(Surgery == 'Ja', TRUE, FALSE))
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(Radiotherapy = if_else(is.na(Radiotherapy), 'Nee', Radiotherapy)) %>% mutate(Radiotherapy = if_else(Radiotherapy == 'Ja', TRUE, FALSE))
@@ -127,26 +130,60 @@ dataset_with_fatigues = dataset_with_fatigues %>% mutate(Chemotherapy = if_else(
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(Hormonetherapy = if_else(is.na(Hormonetherapy), 'Nee', Hormonetherapy)) %>% mutate(Hormonetherapy = if_else(Hormonetherapy == 'Ja', TRUE, FALSE))
 
 
-dataset_model_1 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT1)
-dataset_model_2 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT2)
-dataset_model_3 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT3)
-dataset_model_4 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT4)
-dataset_model_5 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT5)
-dataset_model_6 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT6)
-dataset_model_7 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT7)
-dataset_model_8 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT8)
-dataset_model_9 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT9)
-dataset_model_10 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT10)
-dataset_model_11 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT11)
-dataset_model_12 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT12)
-dataset_model_13 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT13)
-dataset_model_14 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT14)
-dataset_model_15 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT15)
-dataset_model_16 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT16)
-dataset_model_17 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT17)
-dataset_model_18 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT18)
-dataset_model_19 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT19)
-dataset_model_20 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT20)
+dataset_with_fatigues$period_treatment = NULL
+dataset_with_fatigues$fill_date = NULL
+#assumption if weekly alchohol is NA, the subject has a consumption equal to 0
+#assumption if regular menstruation field is NA, the subject has regular menstruation
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(weekly_alcohol = if_else(is.na(weekly_alcohol), 0, weekly_alcohol))
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(regular_menstruation = if_else(regular_menstruation == 1, TRUE, FALSE)) %>% mutate(regular_menstruation = if_else(is.na(regular_menstruation),TRUE, regular_menstruation))
+
+#assumption: if drugs is NA, we assume the subject takes no drug
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(drugs = if_else(drugs == 1, TRUE, FALSE)) %>% mutate(drugs = if_else(is.na(drugs),FALSE, drugs))
+
+#assumption: if pill is NA, we assume the subject takes no pill
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(pill = if_else(pill == 1, TRUE, FALSE)) %>% mutate(pill = if_else(is.na(pill),FALSE, pill))
 
 
+#assumption: if times_pregnant is NA, we assume the subject was never pregnant
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(times_pregnant = if_else(is.na(times_pregnant),0, times_pregnant))
+
+#assumption: if pr is NA, we assume the subject takes no pill
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(previous_hormon_treatment = if_else(previous_hormon_treatment == 1, TRUE, FALSE)) %>% mutate(previous_hormon_treatment = if_else(is.na(previous_hormon_treatment),FALSE, previous_hormon_treatment))
+
+#replace remaining NAs with 0
+
+dataset_with_fatigues[is.na(dataset_with_fatigues)] = 0
+
+
+dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT1)
+dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT2)
+dataset_model_3 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT3)
+dataset_model_4 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT4)
+dataset_model_5 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT5)
+dataset_model_6 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT6)
+dataset_model_7 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT7)
+dataset_model_8 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT8)
+dataset_model_9 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT9)
+dataset_model_10 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT10)
+dataset_model_11 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT11)
+dataset_model_12 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT12)
+dataset_model_13 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT13)
+dataset_model_14 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT14)
+dataset_model_15 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT15)
+dataset_model_16 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT16)
+dataset_model_17 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT17)
+dataset_model_18 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT18)
+dataset_model_19 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT19)
+dataset_model_20 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT20)
+
+
+
+#Building the model 1
+
+train_m1 = dataset_model_1 %>% slice_head(n=250)
+test_m1 = dataset_model_1 %>% slice_tail(n=47)
+
+model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m1)
+
+predict_y = predict(model_1, test_m1)
 
