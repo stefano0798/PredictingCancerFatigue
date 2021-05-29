@@ -76,7 +76,7 @@ T4_qol_pt = read_sav(path_T4_qol_pt)
 # translate useful columns to English
 
 baseline = rename(baseline, height = Length_avg, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
-baseline_dataset = baseline %>% select(ID, height, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment)
+baseline_dataset = baseline %>% select(ID, height, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP)
 
 T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
 
@@ -119,7 +119,12 @@ dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT20 = as.factor(EFAT
 #keep groups 0/5
 # for people not in medical data, set NAs
 
-dataset_with_fatigues = full_join(dataset_with_fatigues, medicalData, )
+dataset_with_fatigues = left_join(dataset_with_fatigues, medicalData, by=c("ID"="ID"))
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(Staging = as.double(Staging)) %>% mutate(Staging = if_else(is.na(Staging), 0.0, Staging))
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(Surgery = if_else(is.na(Surgery), 'Nee', Surgery)) %>% mutate(Surgery = if_else(Surgery == 'Ja', TRUE, FALSE))
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(Radiotherapy = if_else(is.na(Radiotherapy), 'Nee', Radiotherapy)) %>% mutate(Radiotherapy = if_else(Radiotherapy == 'Ja', TRUE, FALSE))
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(Chemotherapy = if_else(is.na(Chemotherapy), 'Nee', Chemotherapy)) %>% mutate(Chemotherapy = if_else(Chemotherapy == 'Ja', TRUE, FALSE))
+dataset_with_fatigues = dataset_with_fatigues %>% mutate(Hormonetherapy = if_else(is.na(Hormonetherapy), 'Nee', Hormonetherapy)) %>% mutate(Hormonetherapy = if_else(Hormonetherapy == 'Ja', TRUE, FALSE))
 
 
 dataset_model_1 = dataset_with_fatigues %>% select(BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, EFAT1)
