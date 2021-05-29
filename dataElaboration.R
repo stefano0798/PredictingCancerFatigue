@@ -8,8 +8,12 @@ T3_path = paste(data_path, "QoLT3", sep = "/")
 T4_path = paste(data_path, "QoLT4", sep = "/")
 
 # read baseline dataset ()
-pathBaseline = file.path(data_path, "Cobra baseline EMPTY.sav")
+pathBaseline = file.path(data_path, "Cobra baseline.sav")
 baseline = read_sav(pathBaseline)
+
+# read medical information dataset ()
+pathMedical = file.path(data_path, "Medical data.sav")
+medicalData = read_sav(pathMedical)
 
 # read datasets from T1
 path_T1_hads = file.path(T1_path, "T1_hads.sav")
