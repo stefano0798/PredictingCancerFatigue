@@ -187,3 +187,174 @@ model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+p
 
 predict_y = predict(model_1, test_m1)
 
+#Building the model 2
+
+train_m2 = dataset_model_2 %>% slice_head(n=250)
+test_m2 = dataset_model_2 %>% slice_tail(n=47)
+
+model_2 = randomForest(EFAT2~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m2)
+
+predict_y = predict(model_2, test_m2)
+
+#Building the model 3
+
+train_m3 = dataset_model_3 %>% slice_head(n=250)
+test_m3 = dataset_model_3 %>% slice_tail(n=47)
+
+model_3 = randomForest(EFAT3~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m3)
+
+predict_y = predict(model_3, test_m3)
+
+#Building the model 4
+
+train_m4 = dataset_model_4 %>% slice_head(n=250)
+test_m4 = dataset_model_4 %>% slice_tail(n=47)
+
+model_4 = randomForest(EFAT4~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m4)
+
+predict_y = predict(model_4, test_m4)
+
+#Building the model 5
+
+train_m5 = dataset_model_5 %>% slice_head(n=250)
+test_m5 = dataset_model_5 %>% slice_tail(n=47)
+
+model_5 = randomForest(EFAT5~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m5)
+
+predict_y = predict(model_5, test_m5)
+
+#Building the model 6
+
+train_m6 = dataset_model_6 %>% slice_head(n=250)
+test_m6 = dataset_model_6 %>% slice_tail(n=47)
+
+model_6 = randomForest(EFAT6~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m6)
+
+predict_y = predict(model_6, test_m6)
+
+#Building the model 7
+
+train_m7 = dataset_model_7 %>% slice_head(n=250)
+test_m7 = dataset_model_7 %>% slice_tail(n=47)
+
+model_7 = randomForest(EFAT7~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m7)
+
+predict_y = predict(model_7, test_m7)
+
+#Building the model 8
+
+train_m8 = dataset_model_8 %>% slice_head(n=250)
+test_m8 = dataset_model_8 %>% slice_tail(n=47)
+
+model_8 = randomForest(EFAT8~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m8)
+
+predict_y = predict(model_8, test_m8)
+
+#Building the model 9
+
+train_m9 = dataset_model_9 %>% slice_head(n=250)
+test_m9 = dataset_model_9 %>% slice_tail(n=47)
+
+model_9 = randomForest(EFAT9~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m9)
+
+predict_y = predict(model_9, test_m9)
+
+#Building the model 10
+
+train_m10 = dataset_model_10 %>% slice_head(n=250)
+test_m10 = dataset_model_10 %>% slice_tail(n=47)
+
+model_10 = randomForest(EFAT10~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m10)
+
+predict_y = predict(model_10, test_m10)
+
+#Building the model 11
+
+train_m11 = dataset_model_11 %>% slice_head(n=250)
+test_m11 = dataset_model_11 %>% slice_tail(n=47)
+
+model_11 = randomForest(EFAT11~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m11)
+
+predict_y = predict(model_11, test_m11)
+
+#Building the model 12
+
+train_m12 = dataset_model_12 %>% slice_head(n=250)
+test_m12 = dataset_model_12 %>% slice_tail(n=47)
+
+model_12 = randomForest(EFAT12~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m12)
+
+predict_y = predict(model_12, test_m12)
+
+#Building the model 13
+
+train_m13 = dataset_model_13 %>% slice_head(n=250)
+test_m13 = dataset_model_13 %>% slice_tail(n=47)
+
+model_13 = randomForest(EFAT13~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m13)
+
+predict_y = predict(model_13, test_m13)
+
+#Building the model 14
+
+train_m14 = dataset_model_14 %>% slice_head(n=250)
+test_m14 = dataset_model_14 %>% slice_tail(n=47)
+
+model_14 = randomForest(EFAT14~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m14)
+
+predict_y = predict(model_14, test_m14)
+
+#Building the model 15
+
+train_m15 = dataset_model_15 %>% slice_head(n=250)
+test_m15 = dataset_model_15 %>% slice_tail(n=47)
+
+model_15 = randomForest(EFAT15~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m15)
+
+predict_y = predict(model_15, test_m15)
+
+#Building the model 16
+
+train_m16 = dataset_model_16 %>% slice_head(n=250)
+test_m16 = dataset_model_16 %>% slice_tail(n=47)
+
+model_16 = randomForest(EFAT16~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m16)
+
+predict_y = predict(model_16, test_m16)
+
+#Building the model 17
+
+train_m17 = dataset_model_17 %>% slice_head(n=250)
+test_m17 = dataset_model_17 %>% slice_tail(n=47)
+
+model_17 = randomForest(EFAT17~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m17)
+
+predict_y = predict(model_17, test_m17)
+
+#Building the model 18
+
+train_m18 = dataset_model_18 %>% slice_head(n=250)
+test_m18 = dataset_model_18 %>% slice_tail(n=47)
+
+model_18 = randomForest(EFAT18~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m18)
+
+predict_y = predict(model_18, test_m18)
+
+#Building the model 19
+
+train_m19 = dataset_model_19 %>% slice_head(n=250)
+test_m19 = dataset_model_19 %>% slice_tail(n=47)
+
+model_19 = randomForest(EFAT19~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m19)
+
+predict_y = predict(model_19, test_m19)
+
+#Building the model 20
+
+train_m20 = dataset_model_20 %>% slice_head(n=250)
+test_m20 = dataset_model_20 %>% slice_tail(n=47)
+
+model_20 = randomForest(EFAT20~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m20)
+
+predict_y = predict(model_20, test_m20)
+
