@@ -430,7 +430,7 @@ for (index in seq(1, length(predict_y_m1))) {
 sum = 0.0
 
 for (index in seq(1, length(predict_y_m1))) {
-  sum = as.double(sum) + as.double(abs(ReducedMotivationPrediction[index] - ReducedMotivationPrediction[index]))
+  sum = as.double(sum) + as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index]))
 }
 average_error_RM = sum/(length(predict_y_m1))
 
