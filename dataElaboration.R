@@ -2,6 +2,7 @@ library(haven)
 # library(dplyr)
 library(tidyverse)
 library(randomForest)
+library(ggplot2)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
@@ -372,14 +373,15 @@ GeneralFatigueReal = predict_y_m1
 GeneralFatiguePrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  GeneralFatigueReal[index] = test_m1$EFAT1[index] + test_m5$EFAT5[index] + test_m12$EFAT12[index] + test_m16$EFAT16[index]
-  GeneralFatiguePrediction[index] = predict_y_m1[index] + predict_y_m5[index] + predict_y_m12[index] + predict_y_m16[index]
+  GeneralFatigueReal[index] = test_m1$EFAT1[index] + (6 - test_m5$EFAT5[index]) + test_m12$EFAT12[index] + (6 - test_m16$EFAT16[index])
+  GeneralFatiguePrediction[index] = predict_y_m1[index] + (6 - predict_y_m5[index]) + predict_y_m12[index] + (6 - predict_y_m16[index])
 }
 
 sum = 0.0
-
+error_GF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
+  error_GF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
 }
 average_error_GF = sum/(length(predict_y_m1))
 
@@ -389,14 +391,15 @@ PhysicalFatigueReal = predict_y_m1
 PhysicalFatiguePrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  PhysicalFatigueReal[index] = test_m2$EFAT2[index] + test_m8$EFAT8[index] + test_m14$EFAT14[index] + test_m20$EFAT20[index]
-  PhysicalFatiguePrediction[index] = predict_y_m2[index] + predict_y_m8[index] + predict_y_m14[index] + predict_y_m20[index]
+  PhysicalFatigueReal[index] = (6 - test_m2$EFAT2[index]) + test_m8$EFAT8[index] + (6 - test_m14$EFAT14[index]) + test_m20$EFAT20[index]
+  PhysicalFatiguePrediction[index] = (6 - predict_y_m2[index]) + predict_y_m8[index] + (6 - predict_y_m14[index]) + predict_y_m20[index]
 }
 
 sum = 0.0
-
+error_PF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index]))
+  error_PF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
 }
 average_error_PF = sum/(length(predict_y_m1))
 
@@ -406,14 +409,15 @@ ReducedActivityReal = predict_y_m1
 ReducedActivityPrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  ReducedActivityReal[index] = test_m3$EFAT3[index] + test_m6$EFAT6[index] + test_m10$EFAT10[index] + test_m17$EFAT17[index]
-  ReducedActivityPrediction[index] = predict_y_m3[index] + predict_y_m6[index] + predict_y_m10[index] + predict_y_m17[index]
+  ReducedActivityReal[index] = test_m3$EFAT3[index] + test_m6$EFAT6[index] + (6 - test_m10$EFAT10[index]) + (6 - test_m17$EFAT17[index])
+  ReducedActivityPrediction[index] = predict_y_m3[index] + predict_y_m6[index] + (6 - predict_y_m10[index]) + (6 - predict_y_m17[index])
 }
 
 sum = 0.0
-
+error_RA = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index]))
+  error_RA[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
 }
 average_error_RA = sum/(length(predict_y_m1))
 
@@ -423,14 +427,15 @@ ReducedMotivationReal = predict_y_m1
 ReducedMotivationPrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  ReducedMotivationReal[index] = test_m4$EFAT4[index] + test_m9$EFAT9[index] + test_m15$EFAT15[index] + test_m18$EFAT18[index]
-  ReducedMotivationPrediction[index] = predict_y_m4[index] + predict_y_m9[index] + predict_y_m15[index] + predict_y_m18[index]
+  ReducedMotivationReal[index] = test_m4$EFAT4[index] + (6 - test_m9$EFAT9[index]) + test_m15$EFAT15[index] + (6 - test_m18$EFAT18[index])
+  ReducedMotivationPrediction[index] = predict_y_m4[index] + (6 - predict_y_m9[index]) + predict_y_m15[index] + (6 - predict_y_m18[index])
 }
 
 sum = 0.0
-
+error_RM = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index]))
+  error_RM[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
 }
 average_error_RM = sum/(length(predict_y_m1))
 
@@ -440,16 +445,49 @@ MentalFatigueReal = predict_y_m1
 MentalFatiguePrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  MentalFatigueReal[index] = test_m7$EFAT7[index] + test_m11$EFAT11[index] + test_m13$EFAT13[index] + test_m19$EFAT19[index]
-  MentalFatiguePrediction[index] = predict_y_m7[index] + predict_y_m11[index] + predict_y_m13[index] + predict_y_m19[index]
+  MentalFatigueReal[index] = test_m7$EFAT7[index] + test_m11$EFAT11[index] + (6 - test_m13$EFAT13[index]) + (6 - test_m19$EFAT19[index])
+  MentalFatiguePrediction[index] = predict_y_m7[index] + predict_y_m11[index] + (6 - predict_y_m13[index]) + (6 - predict_y_m19[index])
 }
 
 sum = 0.0
-
+error_MF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index]))
+  error_MF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
 }
 average_error_MF = sum/(length(predict_y_m1))
 
+#printing the average error
 
+average_error_GF
+average_error_MF
+average_error_PF
+average_error_RA
+average_error_RM
+
+#plotting the errors
+
+error_GF_frame = data.frame(error_GF)
+error_GF_frame = error_GF_frame %>% mutate(name = "GF") %>% rename("error" = "error_GF")
+
+error_MF_frame = data.frame(error_MF)
+error_MF_frame = error_MF_frame %>% mutate(name = "MF") %>% rename("error" = "error_MF")
+
+error_PF_frame = data.frame(error_PF)
+error_PF_frame = error_PF_frame %>% mutate(name = "PF") %>% rename("error" = "error_PF")
+
+error_RM_frame = data.frame(error_RM)
+error_RM_frame = error_RM_frame %>% mutate(name = "RM") %>% rename("error" = "error_RM")
+
+error_RA_frame = data.frame(error_RA)
+error_RA_frame = error_RA_frame %>% mutate(name = "RA") %>% rename("error" = "error_RA")
+
+errorFrame = rbind(error_GF_frame, error_PF_frame, error_RA_frame, error_RM_frame, error_MF_frame)
+
+errorFrame = errorFrame %>% mutate(error = as.double(error))
+#boxplot(error~name,data=errorFrame, main="Prediction error distribution",
+#      xlab="Fatigues", ylab="Error values", varwidth=TRUE) 
+
+ggplot(errorFrame, aes(x=name, y=error)) + 
+  geom_boxplot()
 
