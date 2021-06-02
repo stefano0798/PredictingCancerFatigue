@@ -13,6 +13,9 @@ T4_path = paste(data_path, "QoLT4", sep = "/")
 pathBaseline = file.path(data_path, "Cobra baseline.sav")
 baseline = read_sav(pathBaseline)
 
+# remove lines with age = NA
+baseline = baseline[!is.na(baseline$ageatinclusion), ]
+
 # read medical information dataset ()
 pathMedical = file.path(data_path, "Medical data.sav")
 medicalData = read_sav(pathMedical)
@@ -21,7 +24,7 @@ medicalData = medicalData %>% select ("ID", "Staging", "OK", "RT", "CT", "HT") %
 # rm data with no stage
 medicalData = medicalData[!(is.na(medicalData$Staging) | medicalData$Staging=="" | medicalData$Staging>4), ]
 medicalData[medicalData==""] = NA
-#normalize fileds of medical data
+#normalize fields of medical data
 medicalData$Staging[medicalData$Staging=="1"] = 1/6
 medicalData$Staging[medicalData$Staging=="2"] = 2/6
 medicalData$Staging[medicalData$Staging=="3"] = 3/6
@@ -399,7 +402,7 @@ sum = 0.0
 error_PF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index]))
-  error_PF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
+  error_PF[index] = as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index]))
 }
 average_error_PF = sum/(length(predict_y_m1))
 
@@ -417,7 +420,7 @@ sum = 0.0
 error_RA = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index]))
-  error_RA[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
+  error_RA[index] = as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index]))
 }
 average_error_RA = sum/(length(predict_y_m1))
 
@@ -435,7 +438,7 @@ sum = 0.0
 error_RM = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index]))
-  error_RM[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
+  error_RM[index] = as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index]))
 }
 average_error_RM = sum/(length(predict_y_m1))
 
@@ -453,7 +456,7 @@ sum = 0.0
 error_MF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index]))
-  error_MF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
+  error_MF[index] = as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index]))
 }
 average_error_MF = sum/(length(predict_y_m1))
 
