@@ -3,6 +3,7 @@ library(haven)
 library(tidyverse)
 library(randomForest)
 library(ggplot2)
+library(caret)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
@@ -190,7 +191,9 @@ test_lines = length(dataset_model_1$BMI) - train_lines
 train_m1 = dataset_model_1 %>% slice_head(n=train_lines)
 test_m1 = dataset_model_1 %>% slice_tail(n=test_lines)
 
-model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m1)
+model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m1)
+featureImportance1 = varImp(model_1)
+plotModel1 = varImpPlot(model_1,type=2)
 
 predict_y_m1 = predict(model_1, test_m1)
 
@@ -199,7 +202,9 @@ predict_y_m1 = predict(model_1, test_m1)
 train_m2 = dataset_model_2 %>% slice_head(n=train_lines)
 test_m2 = dataset_model_2 %>% slice_tail(n=test_lines)
 
-model_2 = randomForest(EFAT2~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m2)
+model_2 = randomForest(EFAT2~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m2)
+featureImportance2 = varImp(model_2)
+plotModel2 = varImpPlot(model_2,type=2)
 
 predict_y_m2 = predict(model_2, test_m2)
 
@@ -208,7 +213,9 @@ predict_y_m2 = predict(model_2, test_m2)
 train_m3 = dataset_model_3 %>% slice_head(n=train_lines)
 test_m3 = dataset_model_3 %>% slice_tail(n=test_lines)
 
-model_3 = randomForest(EFAT3~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m3)
+model_3 = randomForest(EFAT3~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m3)
+featureImportance3 = varImp(model_3)
+plotModel3 = varImpPlot(model_3,type=2)
 
 predict_y_m3 = predict(model_3, test_m3)
 
@@ -217,7 +224,9 @@ predict_y_m3 = predict(model_3, test_m3)
 train_m4 = dataset_model_4 %>% slice_head(n=train_lines)
 test_m4 = dataset_model_4 %>% slice_tail(n=test_lines)
 
-model_4 = randomForest(EFAT4~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m4)
+model_4 = randomForest(EFAT4~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m4)
+featureImportance4 = varImp(model_4)
+plotModel4 = varImpPlot(model_4,type=2)
 
 predict_y_m4 = predict(model_4, test_m4)
 
@@ -226,7 +235,9 @@ predict_y_m4 = predict(model_4, test_m4)
 train_m5 = dataset_model_5 %>% slice_head(n=train_lines)
 test_m5 = dataset_model_5 %>% slice_tail(n=test_lines)
 
-model_5 = randomForest(EFAT5~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m5)
+model_5 = randomForest(EFAT5~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m5)
+featureImportance5 = varImp(model_5)
+plotModel5 = varImpPlot(model_5,type=2)
 
 predict_y_m5 = predict(model_5, test_m5)
 
@@ -235,7 +246,9 @@ predict_y_m5 = predict(model_5, test_m5)
 train_m6 = dataset_model_6 %>% slice_head(n=train_lines)
 test_m6 = dataset_model_6 %>% slice_tail(n=test_lines)
 
-model_6 = randomForest(EFAT6~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m6)
+model_6 = randomForest(EFAT6~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m6)
+featureImportance6 = varImp(model_6)
+plotModel6 = varImpPlot(model_6,type=2)
 
 predict_y_m6 = predict(model_6, test_m6)
 
@@ -244,7 +257,9 @@ predict_y_m6 = predict(model_6, test_m6)
 train_m7 = dataset_model_7 %>% slice_head(n=train_lines)
 test_m7 = dataset_model_7 %>% slice_tail(n=test_lines)
 
-model_7 = randomForest(EFAT7~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m7)
+model_7 = randomForest(EFAT7~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m7)
+featureImportance7 = varImp(model_7)
+plotModel7 = varImpPlot(model_7,type=2)
 
 predict_y_m7 = predict(model_7, test_m7)
 
@@ -253,7 +268,9 @@ predict_y_m7 = predict(model_7, test_m7)
 train_m8 = dataset_model_8 %>% slice_head(n=train_lines)
 test_m8 = dataset_model_8 %>% slice_tail(n=test_lines)
 
-model_8 = randomForest(EFAT8~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m8)
+model_8 = randomForest(EFAT8~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m8)
+featureImportance8 = varImp(model_8)
+plotModel8 = varImpPlot(model_8,type=2)
 
 predict_y_m8 = predict(model_8, test_m8)
 
@@ -262,7 +279,9 @@ predict_y_m8 = predict(model_8, test_m8)
 train_m9 = dataset_model_9 %>% slice_head(n=train_lines)
 test_m9 = dataset_model_9 %>% slice_tail(n=test_lines)
 
-model_9 = randomForest(EFAT9~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m9)
+model_9 = randomForest(EFAT9~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m9)
+featureImportance9 = varImp(model_9)
+plotModel9 = varImpPlot(model_9,type=2)
 
 predict_y_m9 = predict(model_9, test_m9)
 
@@ -271,7 +290,9 @@ predict_y_m9 = predict(model_9, test_m9)
 train_m10 = dataset_model_10 %>% slice_head(n=train_lines)
 test_m10 = dataset_model_10 %>% slice_tail(n=test_lines)
 
-model_10 = randomForest(EFAT10~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m10)
+model_10 = randomForest(EFAT10~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m10)
+featureImportance10 = varImp(model_10)
+plotModel10 = varImpPlot(model_10,type=2)
 
 predict_y_m10 = predict(model_10, test_m10)
 
@@ -280,7 +301,9 @@ predict_y_m10 = predict(model_10, test_m10)
 train_m11 = dataset_model_11 %>% slice_head(n=train_lines)
 test_m11 = dataset_model_11 %>% slice_tail(n=test_lines)
 
-model_11 = randomForest(EFAT11~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m11)
+model_11 = randomForest(EFAT11~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m11)
+featureImportance11 = varImp(model_11)
+plotModel11 = varImpPlot(model_11,type=2)
 
 predict_y_m11 = predict(model_11, test_m11)
 
@@ -289,7 +312,9 @@ predict_y_m11 = predict(model_11, test_m11)
 train_m12 = dataset_model_12 %>% slice_head(n=train_lines)
 test_m12 = dataset_model_12 %>% slice_tail(n=test_lines)
 
-model_12 = randomForest(EFAT12~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m12)
+model_12 = randomForest(EFAT12~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m12)
+featureImportance12 = varImp(model_12)
+plotModel12 = varImpPlot(model_12,type=2)
 
 predict_y_m12 = predict(model_12, test_m12)
 
@@ -298,7 +323,9 @@ predict_y_m12 = predict(model_12, test_m12)
 train_m13 = dataset_model_13 %>% slice_head(n=train_lines)
 test_m13 = dataset_model_13 %>% slice_tail(n=test_lines)
 
-model_13 = randomForest(EFAT13~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m13)
+model_13 = randomForest(EFAT13~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m13)
+featureImportance13 = varImp(model_13)
+plotModel13 = varImpPlot(model_13,type=2)
 
 predict_y_m13 = predict(model_13, test_m13)
 
@@ -307,7 +334,9 @@ predict_y_m13 = predict(model_13, test_m13)
 train_m14 = dataset_model_14 %>% slice_head(n=train_lines)
 test_m14 = dataset_model_14 %>% slice_tail(n=test_lines)
 
-model_14 = randomForest(EFAT14~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m14)
+model_14 = randomForest(EFAT14~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m14)
+featureImportance14 = varImp(model_14)
+plotModel14 = varImpPlot(model_14,type=2)
 
 predict_y_m14 = predict(model_14, test_m14)
 
@@ -316,7 +345,9 @@ predict_y_m14 = predict(model_14, test_m14)
 train_m15 = dataset_model_15 %>% slice_head(n=train_lines)
 test_m15 = dataset_model_15 %>% slice_tail(n=test_lines)
 
-model_15 = randomForest(EFAT15~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m15)
+model_15 = randomForest(EFAT15~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m15)
+featureImportance15 = varImp(model_15)
+plotModel15 = varImpPlot(model_15,type=2)
 
 predict_y_m15 = predict(model_15, test_m15)
 
@@ -325,7 +356,9 @@ predict_y_m15 = predict(model_15, test_m15)
 train_m16 = dataset_model_16 %>% slice_head(n=train_lines)
 test_m16 = dataset_model_16 %>% slice_tail(n=test_lines)
 
-model_16 = randomForest(EFAT16~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m16)
+model_16 = randomForest(EFAT16~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m16)
+featureImportance16 = varImp(model_16)
+plotModel16 = varImpPlot(model_16,type=2)
 
 predict_y_m16 = predict(model_16, test_m16)
 
@@ -334,7 +367,9 @@ predict_y_m16 = predict(model_16, test_m16)
 train_m17 = dataset_model_17 %>% slice_head(n=train_lines)
 test_m17 = dataset_model_17 %>% slice_tail(n=test_lines)
 
-model_17 = randomForest(EFAT17~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m17)
+model_17 = randomForest(EFAT17~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m17)
+featureImportance17 = varImp(model_17)
+plotModel17 = varImpPlot(model_17,type=2)
 
 predict_y_m17 = predict(model_17, test_m17)
 
@@ -343,7 +378,9 @@ predict_y_m17 = predict(model_17, test_m17)
 train_m18 = dataset_model_18 %>% slice_head(n=train_lines)
 test_m18 = dataset_model_18 %>% slice_tail(n=test_lines)
 
-model_18 = randomForest(EFAT18~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m18)
+model_18 = randomForest(EFAT18~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m18)
+featureImportance18 = varImp(model_18)
+plotModel18 = varImpPlot(model_18,type=2)
 
 predict_y_m18 = predict(model_18, test_m18)
 
@@ -352,7 +389,9 @@ predict_y_m18 = predict(model_18, test_m18)
 train_m19 = dataset_model_19 %>% slice_head(n=train_lines)
 test_m19 = dataset_model_19 %>% slice_tail(n=test_lines)
 
-model_19 = randomForest(EFAT19~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m19)
+model_19 = randomForest(EFAT19~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m19)
+featureImportance19 = varImp(model_19)
+plotModel19 = varImpPlot(model_19,type=2)
 
 predict_y_m19 = predict(model_19, test_m19)
 
@@ -361,7 +400,9 @@ predict_y_m19 = predict(model_19, test_m19)
 train_m20 = dataset_model_20 %>% slice_head(n=train_lines)
 test_m20 = dataset_model_20 %>% slice_tail(n=test_lines)
 
-model_20 = randomForest(EFAT20~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic, data=train_m20)
+model_20 = randomForest(EFAT20~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy, data=train_m20)
+featureImportance20 = varImp(model_20)
+plotModel20 = varImpPlot(model_20,type=2)
 
 predict_y_m20 = predict(model_20, test_m20)
 
@@ -491,8 +532,41 @@ error_RA_frame = error_RA_frame %>% mutate(name = "RA") %>% rename("error" = "er
 errorFrame = rbind(error_GF_frame, error_PF_frame, error_RA_frame, error_RM_frame, error_MF_frame)
 
 errorFrame = errorFrame %>% mutate(error = as.double(error))
-#boxplot(error~name,data=errorFrame, main="Prediction error distribution",
-#      xlab="Fatigues", ylab="Error values", varwidth=TRUE) 
 
-ggplot(errorFrame, aes(x=name, y=error)) + geom_boxplot()
+errorPlot = ggplot(errorFrame, aes(x=name, y=error)) + geom_boxplot()
 
+#plotting the importance of each feature
+avgImportance = c()
+length(featureImportance1$Overall)
+for (index in seq(1, length(featureImportance1$Overall))) {
+  avgImportance[index] = as.double(featureImportance1$Overall[index] + featureImportance2$Overall[index] + featureImportance3$Overall[index] + featureImportance4$Overall[index] +
+    featureImportance5$Overall[index] + featureImportance6$Overall[index] + featureImportance7$Overall[index] + 
+    featureImportance8$Overall[index] + featureImportance9$Overall[index] + featureImportance10$Overall[index] + 
+    featureImportance11$Overall[index] + featureImportance12$Overall[index] + featureImportance13$Overall[index] + 
+    featureImportance14$Overall[index] + featureImportance15$Overall[index] + featureImportance16$Overall[index] + 
+    featureImportance17$Overall[index] + featureImportance18$Overall[index] + featureImportance19$Overall[index] + 
+    featureImportance20$Overall[index])/20
+}
+
+avgImportance_Frame = data.frame(avgImportance) 
+
+avgImportance_Frame = avgImportance_Frame %>% mutate(feature = "X")
+
+avgImportance_Frame$feature[1] = "XBMI"
+avgImportance_Frame$feature[2] = "XAge"
+avgImportance_Frame$feature[3] = "XWA"
+avgImportance_Frame$feature[4] = "XTP"
+avgImportance_Frame$feature[5] = "XTen"
+avgImportance_Frame$feature[6] = "XWorr"
+avgImportance_Frame$feature[7] = "XChem"
+avgImportance_Frame$feature[8] = "XSurg"
+avgImportance_Frame$feature[9] = "XHorm"
+avgImportance_Frame$feature[10] = "XPan"
+avgImportance_Frame$feature[11] = "XDrug"
+avgImportance_Frame$feature[12] = "XRad"
+avgImportance_Frame$feature[13] = "XRM"
+avgImportance_Frame$feature[14] = "XAnx"
+avgImportance_Frame$feature[15] = "XPill"
+avgImportance_Frame$feature[16] = "XPHTBC"
+
+ggplot(avgImportance_Frame, aes(x=avgImportance, y=feature)) + geom_point()
