@@ -159,34 +159,45 @@ dataset_with_fatigues = dataset_with_fatigues %>% mutate(previous_hormon_treatme
 
 dataset_with_fatigues[is.na(dataset_with_fatigues)] = 0
 
+# considering also baseline fatigue values
+baseline_fatigues = baseline %>% select(ID, bfat1, fat2recoded, bfat3, bfat4, fat5recoded, bfat6, bfat7, bfat8, fat9recoded, fat10recoded, bfat11, bfat12, fat13recoded, fat14recoded, bfat15, fat16recoded, fat17recoded, fat18recoded, fat19recoded, bfat20)
+baseline_fatigues = baseline_fatigues %>% rename(bas_fat1=bfat1, bas_fat2=fat2recoded, bas_fat3=bfat3, bas_fat4=bfat4, bas_fat5=fat5recoded, bas_fat6=bfat6, bas_fat7=bfat7, bas_fat8=bfat8, bas_fat9=fat9recoded, bas_fat10=fat10recoded,bas_fat11=bfat11, bas_fat12=bfat12, bas_fat13=fat13recoded, bas_fat14=fat14recoded, bas_fat15=bfat15, bas_fat16=fat16recoded, bas_fat17=fat17recoded, bas_fat18=fat18recoded, bas_fat19=fat19recoded, bas_fat20=bfat20)
 
-dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT1)
-dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT2)
-dataset_model_3 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT3)
-dataset_model_4 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT4)
-dataset_model_5 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT5)
-dataset_model_6 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT6)
-dataset_model_7 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT7)
-dataset_model_8 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT8)
-dataset_model_9 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT9)
-dataset_model_10 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT10)
-dataset_model_11 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT11)
-dataset_model_12 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT12)
-dataset_model_13 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT13)
-dataset_model_14 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT14)
-dataset_model_15 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT15)
-dataset_model_16 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT16)
-dataset_model_17 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT17)
-dataset_model_18 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT18)
-dataset_model_19 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT19)
-dataset_model_20 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, EFAT20)
+# merging the dataset with the baseline fatigues
 
+dataset_with_fatigues = inner_join(dataset_with_fatigues, baseline_fatigues, by=c("ID"="ID"))
 
+# recoding fatigues here
+
+dataset_with_fatigues = dataset_with_fatigues %>% mutate( EFAT2 = (6 - EFAT2)) %>% mutate( EFAT5 = (6 - EFAT5)) %>% mutate( EFAT9 = (6 - EFAT9)) %>% mutate( EFAT10 = (6 - EFAT10)) %>% mutate( EFAT13 = (6 - EFAT13)) %>% mutate( EFAT14 = (6 - EFAT14)) %>% mutate( EFAT16 = (6 - EFAT16)) %>% mutate( EFAT17 = (6 - EFAT17)) %>% mutate( EFAT18 = (6 - EFAT18)) %>% mutate( EFAT19 = (6 - EFAT19))
+
+dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat1, EFAT1)
+dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat2, EFAT2)
+dataset_model_3 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat3, EFAT3)
+dataset_model_4 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat4, EFAT4)
+dataset_model_5 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat5, EFAT5)
+dataset_model_6 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat6, EFAT6)
+dataset_model_7 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat7, EFAT7)
+dataset_model_8 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat8, EFAT8)
+dataset_model_9 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat9, EFAT9)
+dataset_model_10 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat10, EFAT10)
+dataset_model_11 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat11, EFAT11)
+dataset_model_12 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat12, EFAT12)
+dataset_model_13 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat13, EFAT13)
+dataset_model_14 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat14, EFAT14)
+dataset_model_15 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat15, EFAT15)
+dataset_model_16 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat16, EFAT16)
+dataset_model_17 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat17, EFAT17)
+dataset_model_18 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat18, EFAT18)
+dataset_model_19 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat19, EFAT19)
+dataset_model_20 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat20, EFAT20)
+
+# defining train and test size 80-20
+
+train_lines = 232 # 80% of the dataset
+test_lines = length(dataset_model_1$BMI) - train_lines
 
 #Building the model 1
-
-train_lines = 232
-test_lines = length(dataset_model_1$BMI) - train_lines
 
 train_m1 = dataset_model_1 %>% slice_head(n=train_lines)
 test_m1 = dataset_model_1 %>% slice_tail(n=test_lines)
@@ -420,8 +431,8 @@ GeneralFatigueReal = predict_y_m1
 GeneralFatiguePrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  GeneralFatigueReal[index] = test_m1$EFAT1[index] + (6 - test_m5$EFAT5[index]) + test_m12$EFAT12[index] + (6 - test_m16$EFAT16[index])
-  GeneralFatiguePrediction[index] = predict_y_m1[index] + (6 - predict_y_m5[index]) + predict_y_m12[index] + (6 - predict_y_m16[index])
+  GeneralFatigueReal[index] = test_m1$EFAT1[index] + (test_m5$EFAT5[index]) + test_m12$EFAT12[index] + (test_m16$EFAT16[index])
+  GeneralFatiguePrediction[index] = predict_y_m1[index] + (predict_y_m5[index]) + predict_y_m12[index] + (predict_y_m16[index])
 }
 
 sum = 0.0
@@ -438,8 +449,8 @@ PhysicalFatigueReal = predict_y_m1
 PhysicalFatiguePrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  PhysicalFatigueReal[index] = (6 - test_m2$EFAT2[index]) + test_m8$EFAT8[index] + (6 - test_m14$EFAT14[index]) + test_m20$EFAT20[index]
-  PhysicalFatiguePrediction[index] = (6 - predict_y_m2[index]) + predict_y_m8[index] + (6 - predict_y_m14[index]) + predict_y_m20[index]
+  PhysicalFatigueReal[index] = (test_m2$EFAT2[index]) + test_m8$EFAT8[index] + (test_m14$EFAT14[index]) + test_m20$EFAT20[index]
+  PhysicalFatiguePrediction[index] = (predict_y_m2[index]) + predict_y_m8[index] + (predict_y_m14[index]) + predict_y_m20[index]
 }
 
 sum = 0.0
@@ -456,8 +467,8 @@ ReducedActivityReal = predict_y_m1
 ReducedActivityPrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  ReducedActivityReal[index] = test_m3$EFAT3[index] + test_m6$EFAT6[index] + (6 - test_m10$EFAT10[index]) + (6 - test_m17$EFAT17[index])
-  ReducedActivityPrediction[index] = predict_y_m3[index] + predict_y_m6[index] + (6 - predict_y_m10[index]) + (6 - predict_y_m17[index])
+  ReducedActivityReal[index] = test_m3$EFAT3[index] + test_m6$EFAT6[index] + (test_m10$EFAT10[index]) + (test_m17$EFAT17[index])
+  ReducedActivityPrediction[index] = predict_y_m3[index] + predict_y_m6[index] + (predict_y_m10[index]) + (predict_y_m17[index])
 }
 
 sum = 0.0
@@ -474,8 +485,8 @@ ReducedMotivationReal = predict_y_m1
 ReducedMotivationPrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  ReducedMotivationReal[index] = test_m4$EFAT4[index] + (6 - test_m9$EFAT9[index]) + test_m15$EFAT15[index] + (6 - test_m18$EFAT18[index])
-  ReducedMotivationPrediction[index] = predict_y_m4[index] + (6 - predict_y_m9[index]) + predict_y_m15[index] + (6 - predict_y_m18[index])
+  ReducedMotivationReal[index] = test_m4$EFAT4[index] + (test_m9$EFAT9[index]) + test_m15$EFAT15[index] + (test_m18$EFAT18[index])
+  ReducedMotivationPrediction[index] = predict_y_m4[index] + (predict_y_m9[index]) + predict_y_m15[index] + (predict_y_m18[index])
 }
 
 sum = 0.0
@@ -492,8 +503,8 @@ MentalFatigueReal = predict_y_m1
 MentalFatiguePrediction = predict_y_m1
 
 for (index in seq(1, length(predict_y_m1))) {
-  MentalFatigueReal[index] = test_m7$EFAT7[index] + test_m11$EFAT11[index] + (6 - test_m13$EFAT13[index]) + (6 - test_m19$EFAT19[index])
-  MentalFatiguePrediction[index] = predict_y_m7[index] + predict_y_m11[index] + (6 - predict_y_m13[index]) + (6 - predict_y_m19[index])
+  MentalFatigueReal[index] = test_m7$EFAT7[index] + test_m11$EFAT11[index] + (test_m13$EFAT13[index]) + (test_m19$EFAT19[index])
+  MentalFatiguePrediction[index] = predict_y_m7[index] + predict_y_m11[index] + (predict_y_m13[index]) + (predict_y_m19[index])
 }
 
 sum = 0.0
