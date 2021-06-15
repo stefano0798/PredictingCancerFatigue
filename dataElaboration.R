@@ -440,6 +440,7 @@ for (index in seq(1, length(predict_y_m1))) {
   GeneralFatiguePrediction[index] = predict_y_m1[index] + (predict_y_m5[index]) + predict_y_m12[index] + (predict_y_m16[index])
 }
 
+#computing Average Error
 sum = 0.0
 error_GF = c()
 for (index in seq(1, length(predict_y_m1))) {
@@ -447,6 +448,13 @@ for (index in seq(1, length(predict_y_m1))) {
   error_GF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
 }
 average_error_GF = sum/(length(predict_y_m1))
+
+#computing Mean Square Error
+sum = 0.0
+for (index in seq(1, length(predict_y_m1))) {
+  sum = as.double(sum) + (as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index])))^2
+}
+MSE_GF = sum/(length(predict_y_m1))
 
 #Compute Physical Fatigue prediction and Average Error
 
@@ -458,6 +466,7 @@ for (index in seq(1, length(predict_y_m1))) {
   PhysicalFatiguePrediction[index] = (predict_y_m2[index]) + predict_y_m8[index] + (predict_y_m14[index]) + predict_y_m20[index]
 }
 
+#computing Average Error
 sum = 0.0
 error_PF = c()
 for (index in seq(1, length(predict_y_m1))) {
@@ -466,7 +475,14 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 average_error_PF = sum/(length(predict_y_m1))
 
-#Compute Reduced Activity prediction and Average Error
+#computing Mean Square Error
+sum = 0.0
+for (index in seq(1, length(predict_y_m1))) {
+  sum = as.double(sum) + (as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index])))^2
+}
+MSE_PF = sum/(length(predict_y_m1))
+
+#Compute Reduced Activity prediction
 
 ReducedActivityReal = predict_y_m1
 ReducedActivityPrediction = predict_y_m1
@@ -476,6 +492,7 @@ for (index in seq(1, length(predict_y_m1))) {
   ReducedActivityPrediction[index] = predict_y_m3[index] + predict_y_m6[index] + (predict_y_m10[index]) + (predict_y_m17[index])
 }
 
+#computing Average Error
 sum = 0.0
 error_RA = c()
 for (index in seq(1, length(predict_y_m1))) {
@@ -484,8 +501,14 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 average_error_RA = sum/(length(predict_y_m1))
 
-#Compute Reduced Motivation prediction and Average Error
+#computing Mean Square Error
+sum = 0.0
+for (index in seq(1, length(predict_y_m1))) {
+  sum = as.double(sum) + (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
+}
+MSE_RA = sum/(length(predict_y_m1))
 
+#Compute Reduced Motivation prediction
 ReducedMotivationReal = predict_y_m1
 ReducedMotivationPrediction = predict_y_m1
 
@@ -494,6 +517,7 @@ for (index in seq(1, length(predict_y_m1))) {
   ReducedMotivationPrediction[index] = predict_y_m4[index] + (predict_y_m9[index]) + predict_y_m15[index] + (predict_y_m18[index])
 }
 
+#computing Average Error
 sum = 0.0
 error_RM = c()
 for (index in seq(1, length(predict_y_m1))) {
@@ -502,7 +526,14 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 average_error_RM = sum/(length(predict_y_m1))
 
-#Compute Mental Fatigue prediction and Average Error
+#computing Mean Square Error
+sum = 0.0
+for (index in seq(1, length(predict_y_m1))) {
+  sum = as.double(sum) + (as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index])))^2
+}
+MSE_RM = sum/(length(predict_y_m1))
+
+#Compute Mental Fatigue prediction 
 
 MentalFatigueReal = predict_y_m1
 MentalFatiguePrediction = predict_y_m1
@@ -512,6 +543,7 @@ for (index in seq(1, length(predict_y_m1))) {
   MentalFatiguePrediction[index] = predict_y_m7[index] + predict_y_m11[index] + (predict_y_m13[index]) + (predict_y_m19[index])
 }
 
+#computing Average Error
 sum = 0.0
 error_MF = c()
 for (index in seq(1, length(predict_y_m1))) {
@@ -520,6 +552,13 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 average_error_MF = sum/(length(predict_y_m1))
 
+#computing Mean Square Error
+sum = 0.0
+for (index in seq(1, length(predict_y_m1))) {
+  sum = as.double(sum) + (as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index])))^2
+}
+MSE_MF = sum/(length(predict_y_m1))
+
 #printing the average error
 
 average_error_GF
@@ -527,6 +566,22 @@ average_error_MF
 average_error_PF
 average_error_RA
 average_error_RM
+
+#printing the mean square error
+
+MSE_GF
+MSE_PF
+MSE_RA
+MSE_RM
+MSE_MF
+
+#printing the root mean square error
+
+sqrt(MSE_GF)
+sqrt(MSE_PF)
+sqrt(MSE_RA)
+sqrt(MSE_RM)
+sqrt(MSE_MF)
 
 #plotting the errors
 
