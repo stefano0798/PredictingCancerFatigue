@@ -443,6 +443,7 @@ for (index in seq(1, length(predict_y_m1))) {
 #computing Average Error
 sum = 0.0
 error_GF = c()
+array_MSE_GF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
   error_GF[index] = as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index]))
@@ -453,6 +454,9 @@ average_error_GF = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index])))^2
+  GeneralFatigueReal[index]
+  GeneralFatiguePrediction[index]
+  array_MSE_GF[index] = (as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index])))^2
 }
 MSE_GF = sum/(length(predict_y_m1))
 
@@ -469,6 +473,7 @@ for (index in seq(1, length(predict_y_m1))) {
 #computing Average Error
 sum = 0.0
 error_PF = c()
+array_MSE_PF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index]))
   error_PF[index] = as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index]))
@@ -479,6 +484,7 @@ average_error_PF = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index])))^2
+  array_MSE_PF[index] = (as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index])))^2
 }
 MSE_PF = sum/(length(predict_y_m1))
 
@@ -495,6 +501,7 @@ for (index in seq(1, length(predict_y_m1))) {
 #computing Average Error
 sum = 0.0
 error_RA = c()
+array_MSE_RA = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index]))
   error_RA[index] = as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index]))
@@ -505,6 +512,7 @@ average_error_RA = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
+  array_MSE_RA[index] = (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
 }
 MSE_RA = sum/(length(predict_y_m1))
 
@@ -520,6 +528,7 @@ for (index in seq(1, length(predict_y_m1))) {
 #computing Average Error
 sum = 0.0
 error_RM = c()
+array_MSE_RM = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index]))
   error_RM[index] = as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index]))
@@ -530,6 +539,7 @@ average_error_RM = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index])))^2
+  array_MSE_RM[index] = (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
 }
 MSE_RM = sum/(length(predict_y_m1))
 
@@ -546,6 +556,7 @@ for (index in seq(1, length(predict_y_m1))) {
 #computing Average Error
 sum = 0.0
 error_MF = c()
+array_MSE_MF = c()
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index]))
   error_MF[index] = as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index]))
@@ -556,6 +567,8 @@ average_error_MF = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index])))^2
+  array_MSE_MF[index] = (as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index])))^2
+  
 }
 MSE_MF = sum/(length(predict_y_m1))
 
@@ -587,6 +600,8 @@ sqrt(MSE_MF)
 
 error_GF_frame = data.frame(error_GF)
 error_GF_frame = error_GF_frame %>% mutate(name = "GF") %>% rename("error" = "error_GF")
+MSE_GF_frequency = table(array_MSE_GF)
+MSE_GF_frequency
 
 error_MF_frame = data.frame(error_MF)
 error_MF_frame = error_MF_frame %>% mutate(name = "MF") %>% rename("error" = "error_MF")
