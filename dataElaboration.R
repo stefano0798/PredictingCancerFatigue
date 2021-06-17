@@ -4,6 +4,7 @@ library(tidyverse)
 library(randomForest)
 library(ggplot2)
 library(caret)
+library(data.table)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
@@ -257,6 +258,7 @@ featureImportance5 = varImp(model_5)
 
 predict_y_m5 = predict(model_5, test_m5)
 
+
 #Building the model 6
 
 train_m6 = dataset_model_6 %>% slice_head(n=train_lines)
@@ -454,10 +456,11 @@ average_error_GF = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index])))^2
-  GeneralFatigueReal[index]
-  GeneralFatiguePrediction[index]
-  array_MSE_GF[index] = (as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index])))^2
+  array_MSE_GF[index] = round((as.double(abs(GeneralFatigueReal[index] - GeneralFatiguePrediction[index])))^2, digits = 1)
 }
+GeneralFatigueReal
+GeneralFatiguePrediction
+array_MSE_GF
 MSE_GF = sum/(length(predict_y_m1))
 
 #Compute Physical Fatigue prediction and Average Error
@@ -484,7 +487,7 @@ average_error_PF = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index])))^2
-  array_MSE_PF[index] = (as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index])))^2
+  array_MSE_PF[index] = round((as.double(abs(PhysicalFatigueReal[index] - PhysicalFatiguePrediction[index])))^2, digits = 1)
 }
 MSE_PF = sum/(length(predict_y_m1))
 
@@ -512,7 +515,7 @@ average_error_RA = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
-  array_MSE_RA[index] = (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
+  array_MSE_RA[index] = round((as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2, digits = 1)
 }
 MSE_RA = sum/(length(predict_y_m1))
 
@@ -539,7 +542,7 @@ average_error_RM = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index])))^2
-  array_MSE_RM[index] = (as.double(abs(ReducedActivityReal[index] - ReducedActivityPrediction[index])))^2
+  array_MSE_RM[index] = round((as.double(abs(ReducedMotivationReal[index] - ReducedMotivationPrediction[index])))^2, digits = 1)
 }
 MSE_RM = sum/(length(predict_y_m1))
 
@@ -567,7 +570,7 @@ average_error_MF = sum/(length(predict_y_m1))
 sum = 0.0
 for (index in seq(1, length(predict_y_m1))) {
   sum = as.double(sum) + (as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index])))^2
-  array_MSE_MF[index] = (as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index])))^2
+  array_MSE_MF[index] = round((as.double(abs(MentalFatigueReal[index] - MentalFatiguePrediction[index])))^2, digits = 1)
   
 }
 MSE_MF = sum/(length(predict_y_m1))
@@ -599,29 +602,41 @@ sqrt(MSE_MF)
 #plotting the errors
 
 error_GF_frame = data.frame(error_GF)
+MSE_GF_frame = data.frame(array_MSE_GF) %>% mutate(name = "GF") %>% rename("SqError" = "array_MSE_GF")
 error_GF_frame = error_GF_frame %>% mutate(name = "GF") %>% rename("error" = "error_GF")
-MSE_GF_frequency = table(array_MSE_GF)
-MSE_GF_frequency
 
 error_MF_frame = data.frame(error_MF)
+MSE_MF_frame = data.frame(array_MSE_MF) %>% mutate(name = "MF") %>% rename("SqError" = "array_MSE_MF")
 error_MF_frame = error_MF_frame %>% mutate(name = "MF") %>% rename("error" = "error_MF")
 
 error_PF_frame = data.frame(error_PF)
+MSE_PF_frame = data.frame(array_MSE_PF) %>% mutate(name = "PF") %>% rename("SqError" = "array_MSE_PF")
 error_PF_frame = error_PF_frame %>% mutate(name = "PF") %>% rename("error" = "error_PF")
 
 error_RM_frame = data.frame(error_RM)
+MSE_RM_frame = data.frame(array_MSE_RM) %>% mutate(name = "RM") %>% rename("SqError" = "array_MSE_RM")
 error_RM_frame = error_RM_frame %>% mutate(name = "RM") %>% rename("error" = "error_RM")
 
 error_RA_frame = data.frame(error_RA)
+MSE_RA_frame = data.frame(array_MSE_RA) %>% mutate(name = "RA") %>% rename("SqError" = "array_MSE_RA")
 error_RA_frame = error_RA_frame %>% mutate(name = "RA") %>% rename("error" = "error_RA")
 
 errorFrame = rbind(error_GF_frame, error_PF_frame, error_RA_frame, error_RM_frame, error_MF_frame)
+MSE_frame = rbind(MSE_GF_frame, MSE_MF_frame, MSE_PF_frame, MSE_RM_frame, MSE_RA_frame)
 
-errorFrame = errorFrame %>% mutate(error = as.double(error))
+errorFrame = errorFrame %>% mutate(error = as.integer(error)) %>% group_by(error, name) %>% mutate(error_frequency = n()) %>% distinct()
+MSE_frame = MSE_frame %>% mutate(error = as.integer(SqError)) %>% group_by(SqError, name) %>% mutate(error_frequency = n()) %>% distinct()
 
 errorPlot = ggplot(errorFrame, aes(x=name, y=error)) + geom_boxplot()
+sqerrorPlot = ggplot(MSE_frame, aes(x=name, y=SqError)) + geom_boxplot()
+
+errorFrequency = ggplot(errorFrame, aes(x=error, y=error_frequency, colour=name)) + geom_histogram(stat='identity')
+MSE_frequency = ggplot(MSE_frame, aes(x=SqError, y=error_frequency, colour=name)) + geom_histogram(stat='identity')
 
 errorPlot
+sqerrorPlot
+errorFrequency
+MSE_frequency
 
 #plotting the importance of each feature
 avgImportance = c(
