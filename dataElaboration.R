@@ -8,7 +8,6 @@ library(data.table)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
-T3_path = paste(data_path, "QoLT3", sep = "/")
 T4_path = paste(data_path, "QoLT4", sep = "/")
 
 # read baseline dataset ()
@@ -52,23 +51,6 @@ T1_qol_contr_2 = read_sav(path_T1_qol_contr_2)
 T1_qol_pt = read_sav(path_T1_qol_pt)
 T1_qol_pt_2 = read_sav(path_T1_qol_pt_2)
 
-
-# read datasets from T3
-path_T3_gq_contr = file.path(T3_path, "T3_gq_contr.sav")
-path_T3_gq_pt = file.path(T3_path, "T3_gq_pt.sav")
-path_T3_hads = file.path(T3_path, "T3_hads.sav")
-path_T3_qol_contr = file.path(T3_path, "T3_qol_contr.sav")
-path_T3_qol_pt = file.path(T3_path, "T3_qol_pt.sav")
-path_T3_symptoms = file.path(T3_path, "T3_symptoms.sav")
-
-T3_gq_contr = read_sav(path_T3_gq_contr)
-T3_gq_pt = read_sav(path_T3_gq_pt)
-T3_hads = read_sav(path_T3_hads)
-T3_qol_contr = read_sav(path_T3_qol_contr)
-T3_qol_pt = read_sav(path_T3_qol_pt)
-T3_symptoms = read_sav(path_T3_symptoms)
-
-
 # read datasets from T4
 path_T4_gq_contr = file.path(T4_path, "T4_gq_contr.sav")
 path_T4_gq_pt = file.path(T4_path, "T4_gq_pt.sav")
@@ -87,21 +69,25 @@ T4_qol_pt = read_sav(path_T4_qol_pt)
 baseline = rename(baseline, age = ageatinclusion, height = Length_avg, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
 baseline_dataset = baseline %>% select(ID, height, age, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, age, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP)
 
-T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
+# T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
 
-dataset_with_selected_t3 = inner_join(baseline_dataset, T3_hads_datainterest, by=c("ID"="RESPNO"))
+T1_hads = rbind(T1_hads, T1_hads_2)
 
-dataset_with_selected_t3 = mutate(dataset_with_selected_t3, t3_tense = t3_tense/3, t3_anxious = t3_anxious/3, t3_worried = t3_worried/3, t3_panic = t3_panic/3)
+T1_hads_datainterest = T1_hads %>% select(RESPNO, HADS1, HADS3, HADS5, HADS13) %>% rename(t1_tense = HADS1, t1_anxious = HADS3, t1_worried = HADS5, t1_panic = HADS13)
+
+dataset_with_selected_t1 = inner_join(baseline_dataset, T1_hads_datainterest, by=c("ID"="RESPNO"))
+
+dataset_with_selected_t1 = mutate(dataset_with_selected_t1, t1_tense = t1_tense/3, t1_anxious = t1_anxious/3, t1_worried = t1_worried/3, t1_panic = t1_panic/3)
 
 T4_hads_datainterest = T4_hads %>% select(RESPNO, EHADS1, EHADS3, EHADS5, EHADS13) %>% rename(t4_tense = EHADS1, t4_anxious = EHADS3, t4_worried = EHADS5, t4_panic = EHADS13)
 
-dataset_t3_t4 = inner_join(dataset_with_selected_t3, T4_hads_datainterest, by=c("ID"="RESPNO"))
+dataset_t1_t4 = inner_join(dataset_with_selected_t1, T4_hads_datainterest, by=c("ID"="RESPNO"))
 
-dataset_t3_t4 = mutate(dataset_t3_t4,t4_tense=t4_tense/3,  t4_anxious=t4_anxious/3, t4_worried=t4_worried/3, t4_panic=t4_panic/3)
+dataset_t1_t4 = mutate(dataset_t1_t4,t4_tense=t4_tense/3,  t4_anxious=t4_anxious/3, t4_worried=t4_worried/3, t4_panic=t4_panic/3)
 
 all_t4_fatigues = rbind(T4_gq_pt, T4_gq_contr) %>% select("RESPNO", "EFAT1","EFAT2","EFAT3","EFAT4","EFAT5","EFAT6","EFAT7","EFAT8","EFAT9","EFAT10","EFAT11","EFAT12","EFAT13","EFAT14","EFAT15","EFAT16","EFAT17","EFAT18","EFAT19","EFAT20")
 
-dataset_with_fatigues = inner_join(dataset_t3_t4, all_t4_fatigues, by=c("ID"="RESPNO"))
+dataset_with_fatigues = inner_join(dataset_t1_t4, all_t4_fatigues, by=c("ID"="RESPNO"))
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT1 = as.factor(EFAT1)) %>% mutate(EFAT1 = as.double(EFAT1)) # %>% mutate (EFAT1 = (EFAT1-1)/4)
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT2 = as.factor(EFAT2)) %>% mutate(EFAT2 = as.double(EFAT2)) # %>% mutate (EFAT2 = (EFAT2-1)/4)
 dataset_with_fatigues = dataset_with_fatigues %>% mutate(EFAT3 = as.factor(EFAT3)) %>% mutate(EFAT3 = as.double(EFAT3)) # %>% mutate (EFAT3 = (EFAT3-1)/4)
@@ -177,26 +163,26 @@ dataset_with_fatigues = dataset_with_fatigues %>% drop_na("bas_fat1") %>% drop_n
 
 
 
-dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat1, EFAT1)
-dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat2, EFAT2)
-dataset_model_3 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat3, EFAT3)
-dataset_model_4 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat4, EFAT4)
-dataset_model_5 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat5, EFAT5)
-dataset_model_6 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat6, EFAT6)
-dataset_model_7 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat7, EFAT7)
-dataset_model_8 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat8, EFAT8)
-dataset_model_9 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat9, EFAT9)
-dataset_model_10 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat10, EFAT10)
-dataset_model_11 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat11, EFAT11)
-dataset_model_12 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat12, EFAT12)
-dataset_model_13 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat13, EFAT13)
-dataset_model_14 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat14, EFAT14)
-dataset_model_15 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat15, EFAT15)
-dataset_model_16 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat16, EFAT16)
-dataset_model_17 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat17, EFAT17)
-dataset_model_18 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat18, EFAT18)
-dataset_model_19 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat19, EFAT19)
-dataset_model_20 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t3_tense, t3_anxious, t3_worried, t3_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat20, EFAT20)
+dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat1, EFAT1)
+dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat2, EFAT2)
+dataset_model_3 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat3, EFAT3)
+dataset_model_4 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat4, EFAT4)
+dataset_model_5 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat5, EFAT5)
+dataset_model_6 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat6, EFAT6)
+dataset_model_7 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat7, EFAT7)
+dataset_model_8 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat8, EFAT8)
+dataset_model_9 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat9, EFAT9)
+dataset_model_10 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat10, EFAT10)
+dataset_model_11 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat11, EFAT11)
+dataset_model_12 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat12, EFAT12)
+dataset_model_13 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat13, EFAT13)
+dataset_model_14 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat14, EFAT14)
+dataset_model_15 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat15, EFAT15)
+dataset_model_16 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat16, EFAT16)
+dataset_model_17 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat17, EFAT17)
+dataset_model_18 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat18, EFAT18)
+dataset_model_19 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat19, EFAT19)
+dataset_model_20 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat20, EFAT20)
 
 # defining train and test size 80-20
 
@@ -208,7 +194,7 @@ test_lines = length(dataset_model_1$BMI) - train_lines
 train_m1 = dataset_model_1 %>% slice_head(n=train_lines)
 test_m1 = dataset_model_1 %>% slice_tail(n=test_lines)
 
-model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat1, data=train_m1)
+model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat1, data=train_m1)
 featureImportance1 = varImp(model_1)
 #plotModel1 = varImpPlot(model_1,type=2)
 
@@ -219,7 +205,7 @@ predict_y_m1 = predict(model_1, test_m1)
 train_m2 = dataset_model_2 %>% slice_head(n=train_lines)
 test_m2 = dataset_model_2 %>% slice_tail(n=test_lines)
 
-model_2 = randomForest(EFAT2~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat2, data=train_m2)
+model_2 = randomForest(EFAT2~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat2, data=train_m2)
 featureImportance2 = varImp(model_2)
 #plotModel2 = varImpPlot(model_2,type=2)
 
@@ -230,7 +216,7 @@ predict_y_m2 = predict(model_2, test_m2)
 train_m3 = dataset_model_3 %>% slice_head(n=train_lines)
 test_m3 = dataset_model_3 %>% slice_tail(n=test_lines)
 
-model_3 = randomForest(EFAT3~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat3, data=train_m3)
+model_3 = randomForest(EFAT3~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat3, data=train_m3)
 featureImportance3 = varImp(model_3)
 #plotModel3 = varImpPlot(model_3,type=2)
 
@@ -241,7 +227,7 @@ predict_y_m3 = predict(model_3, test_m3)
 train_m4 = dataset_model_4 %>% slice_head(n=train_lines)
 test_m4 = dataset_model_4 %>% slice_tail(n=test_lines)
 
-model_4 = randomForest(EFAT4~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat4, data=train_m4)
+model_4 = randomForest(EFAT4~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat4, data=train_m4)
 featureImportance4 = varImp(model_4)
 #plotModel4 = varImpPlot(model_4,type=2)
 
@@ -252,7 +238,7 @@ predict_y_m4 = predict(model_4, test_m4)
 train_m5 = dataset_model_5 %>% slice_head(n=train_lines)
 test_m5 = dataset_model_5 %>% slice_tail(n=test_lines)
 
-model_5 = randomForest(EFAT5~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat5, data=train_m5)
+model_5 = randomForest(EFAT5~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat5, data=train_m5)
 featureImportance5 = varImp(model_5)
 #plotModel5 = varImpPlot(model_5,type=2)
 
@@ -264,7 +250,7 @@ predict_y_m5 = predict(model_5, test_m5)
 train_m6 = dataset_model_6 %>% slice_head(n=train_lines)
 test_m6 = dataset_model_6 %>% slice_tail(n=test_lines)
 
-model_6 = randomForest(EFAT6~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat6, data=train_m6)
+model_6 = randomForest(EFAT6~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat6, data=train_m6)
 featureImportance6 = varImp(model_6)
 #plotModel6 = varImpPlot(model_6,type=2)
 
@@ -275,7 +261,7 @@ predict_y_m6 = predict(model_6, test_m6)
 train_m7 = dataset_model_7 %>% slice_head(n=train_lines)
 test_m7 = dataset_model_7 %>% slice_tail(n=test_lines)
 
-model_7 = randomForest(EFAT7~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat7, data=train_m7)
+model_7 = randomForest(EFAT7~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat7, data=train_m7)
 featureImportance7 = varImp(model_7)
 #plotModel7 = varImpPlot(model_7,type=2)
 
@@ -286,7 +272,7 @@ predict_y_m7 = predict(model_7, test_m7)
 train_m8 = dataset_model_8 %>% slice_head(n=train_lines)
 test_m8 = dataset_model_8 %>% slice_tail(n=test_lines)
 
-model_8 = randomForest(EFAT8~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat8, data=train_m8)
+model_8 = randomForest(EFAT8~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat8, data=train_m8)
 featureImportance8 = varImp(model_8)
 #plotModel8 = varImpPlot(model_8,type=2)
 
@@ -297,7 +283,7 @@ predict_y_m8 = predict(model_8, test_m8)
 train_m9 = dataset_model_9 %>% slice_head(n=train_lines)
 test_m9 = dataset_model_9 %>% slice_tail(n=test_lines)
 
-model_9 = randomForest(EFAT9~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat9, data=train_m9)
+model_9 = randomForest(EFAT9~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat9, data=train_m9)
 featureImportance9 = varImp(model_9)
 #plotModel9 = varImpPlot(model_9,type=2)
 
@@ -308,7 +294,7 @@ predict_y_m9 = predict(model_9, test_m9)
 train_m10 = dataset_model_10 %>% slice_head(n=train_lines)
 test_m10 = dataset_model_10 %>% slice_tail(n=test_lines)
 
-model_10 = randomForest(EFAT10~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat10, data=train_m10)
+model_10 = randomForest(EFAT10~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat10, data=train_m10)
 featureImportance10 = varImp(model_10)
 #plotModel10 = varImpPlot(model_10,type=2)
 
@@ -319,7 +305,7 @@ predict_y_m10 = predict(model_10, test_m10)
 train_m11 = dataset_model_11 %>% slice_head(n=train_lines)
 test_m11 = dataset_model_11 %>% slice_tail(n=test_lines)
 
-model_11 = randomForest(EFAT11~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat11, data=train_m11)
+model_11 = randomForest(EFAT11~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat11, data=train_m11)
 featureImportance11 = varImp(model_11)
 #plotModel11 = varImpPlot(model_11,type=2)
 
@@ -330,7 +316,7 @@ predict_y_m11 = predict(model_11, test_m11)
 train_m12 = dataset_model_12 %>% slice_head(n=train_lines)
 test_m12 = dataset_model_12 %>% slice_tail(n=test_lines)
 
-model_12 = randomForest(EFAT12~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat12, data=train_m12)
+model_12 = randomForest(EFAT12~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat12, data=train_m12)
 featureImportance12 = varImp(model_12)
 #plotModel12 = varImpPlot(model_12,type=2)
 
@@ -341,7 +327,7 @@ predict_y_m12 = predict(model_12, test_m12)
 train_m13 = dataset_model_13 %>% slice_head(n=train_lines)
 test_m13 = dataset_model_13 %>% slice_tail(n=test_lines)
 
-model_13 = randomForest(EFAT13~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat13, data=train_m13)
+model_13 = randomForest(EFAT13~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat13, data=train_m13)
 featureImportance13 = varImp(model_13)
 #plotModel13 = varImpPlot(model_13,type=2)
 
@@ -352,7 +338,7 @@ predict_y_m13 = predict(model_13, test_m13)
 train_m14 = dataset_model_14 %>% slice_head(n=train_lines)
 test_m14 = dataset_model_14 %>% slice_tail(n=test_lines)
 
-model_14 = randomForest(EFAT14~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat14, data=train_m14)
+model_14 = randomForest(EFAT14~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat14, data=train_m14)
 featureImportance14 = varImp(model_14)
 #plotModel14 = varImpPlot(model_14,type=2)
 
@@ -363,7 +349,7 @@ predict_y_m14 = predict(model_14, test_m14)
 train_m15 = dataset_model_15 %>% slice_head(n=train_lines)
 test_m15 = dataset_model_15 %>% slice_tail(n=test_lines)
 
-model_15 = randomForest(EFAT15~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat15, data=train_m15)
+model_15 = randomForest(EFAT15~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat15, data=train_m15)
 featureImportance15 = varImp(model_15)
 #plotModel15 = varImpPlot(model_15,type=2)
 
@@ -374,7 +360,7 @@ predict_y_m15 = predict(model_15, test_m15)
 train_m16 = dataset_model_16 %>% slice_head(n=train_lines)
 test_m16 = dataset_model_16 %>% slice_tail(n=test_lines)
 
-model_16 = randomForest(EFAT16~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat16, data=train_m16)
+model_16 = randomForest(EFAT16~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat16, data=train_m16)
 featureImportance16 = varImp(model_16)
 #plotModel16 = varImpPlot(model_16,type=2)
 
@@ -385,7 +371,7 @@ predict_y_m16 = predict(model_16, test_m16)
 train_m17 = dataset_model_17 %>% slice_head(n=train_lines)
 test_m17 = dataset_model_17 %>% slice_tail(n=test_lines)
 
-model_17 = randomForest(EFAT17~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat17, data=train_m17)
+model_17 = randomForest(EFAT17~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat17, data=train_m17)
 featureImportance17 = varImp(model_17)
 #plotModel17 = varImpPlot(model_17,type=2)
 
@@ -396,7 +382,7 @@ predict_y_m17 = predict(model_17, test_m17)
 train_m18 = dataset_model_18 %>% slice_head(n=train_lines)
 test_m18 = dataset_model_18 %>% slice_tail(n=test_lines)
 
-model_18 = randomForest(EFAT18~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat18, data=train_m18)
+model_18 = randomForest(EFAT18~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat18, data=train_m18)
 featureImportance18 = varImp(model_18)
 #plotModel18 = varImpPlot(model_18,type=2)
 
@@ -407,7 +393,7 @@ predict_y_m18 = predict(model_18, test_m18)
 train_m19 = dataset_model_19 %>% slice_head(n=train_lines)
 test_m19 = dataset_model_19 %>% slice_tail(n=test_lines)
 
-model_19 = randomForest(EFAT19~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat19, data=train_m19)
+model_19 = randomForest(EFAT19~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat19, data=train_m19)
 featureImportance19 = varImp(model_19)
 #plotModel19 = varImpPlot(model_19,type=2)
 
@@ -418,7 +404,7 @@ predict_y_m19 = predict(model_19, test_m19)
 train_m20 = dataset_model_20 %>% slice_head(n=train_lines)
 test_m20 = dataset_model_20 %>% slice_tail(n=test_lines)
 
-model_20 = randomForest(EFAT20~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t3_tense+t3_anxious+t3_worried+t3_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat20, data=train_m20)
+model_20 = randomForest(EFAT20~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat20, data=train_m20)
 featureImportance20 = varImp(model_20)
 #plotModel20 = varImpPlot(model_20,type=2)
 
