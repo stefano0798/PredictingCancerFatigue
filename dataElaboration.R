@@ -5,6 +5,7 @@ library(randomForest)
 library(ggplot2)
 library(caret)
 library(data.table)
+library(pdp)
 
 data_path = "data/Data"
 T1_path = paste(data_path, "QoLT1", sep = "/")
@@ -161,7 +162,8 @@ dataset_with_fatigues = dataset_with_fatigues %>% mutate( EFAT2 = (6 - EFAT2)) %
 # delete rows with missing fatigues
 dataset_with_fatigues = dataset_with_fatigues %>% drop_na("bas_fat1") %>% drop_na("bas_fat2") %>% drop_na("bas_fat3") %>% drop_na("bas_fat4") %>% drop_na("bas_fat5") %>% drop_na("bas_fat6") %>% drop_na("bas_fat7") %>% drop_na("bas_fat8") %>% drop_na("bas_fat9") %>% drop_na("bas_fat10") %>% drop_na("bas_fat11") %>% drop_na("bas_fat12") %>% drop_na("bas_fat13") %>% drop_na("bas_fat14") %>% drop_na("bas_fat15") %>% drop_na("bas_fat16") %>% drop_na("bas_fat17") %>% drop_na("bas_fat18") %>% drop_na("bas_fat19") %>% drop_na("bas_fat20")
 
-
+#delete rows with BMI equals to 0
+dataset_with_fatigues<-dataset_with_fatigues[!(dataset_with_fatigues$BMI<10),]
 
 dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat1, EFAT1)
 dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat2, EFAT2)
@@ -193,12 +195,17 @@ test_lines = length(dataset_model_1$BMI) - train_lines
 
 train_m1 = dataset_model_1 %>% slice_head(n=train_lines)
 test_m1 = dataset_model_1 %>% slice_tail(n=test_lines)
+#train_m1$BMI <- unlist(train_m1$BMI)
 
 model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat1, data=train_m1)
 featureImportance1 = varImp(model_1)
 #plotModel1 = varImpPlot(model_1,type=2)
 
 predict_y_m1 = predict(model_1, test_m1)
+
+# Define lattice-based PDP (Partial depedence function)
+p1 <- partial(model_1, pred.var = c("bas_fat1", "BMI"), plot = TRUE, rug = TRUE)
+p1
 
 #Building the model 2
 
@@ -211,6 +218,10 @@ featureImportance2 = varImp(model_2)
 
 predict_y_m2 = predict(model_2, test_m2)
 
+# Define lattice-based PDP (Partial depedence function)
+p2 <- partial(model_2, pred.var = c("bas_fat2", "BMI"), plot = TRUE, rug = TRUE)
+p2
+
 #Building the model 3
 
 train_m3 = dataset_model_3 %>% slice_head(n=train_lines)
@@ -221,6 +232,10 @@ featureImportance3 = varImp(model_3)
 #plotModel3 = varImpPlot(model_3,type=2)
 
 predict_y_m3 = predict(model_3, test_m3)
+
+# Define lattice-based PDP (Partial depedence function)
+p3 <- partial(model_3, pred.var = c("bas_fat3", "BMI"), plot = TRUE, rug = TRUE)
+p3
 
 #Building the model 4
 
@@ -233,6 +248,10 @@ featureImportance4 = varImp(model_4)
 
 predict_y_m4 = predict(model_4, test_m4)
 
+# Define lattice-based PDP (Partial depedence function)
+p4 <- partial(model_4, pred.var = c("bas_fat4", "BMI"), plot = TRUE, rug = TRUE)
+p4
+
 #Building the model 5
 
 train_m5 = dataset_model_5 %>% slice_head(n=train_lines)
@@ -244,6 +263,9 @@ featureImportance5 = varImp(model_5)
 
 predict_y_m5 = predict(model_5, test_m5)
 
+# Define lattice-based PDP (Partial depedence function)
+p5 <- partial(model_5, pred.var = c("bas_fat5", "BMI"), plot = TRUE, rug = TRUE)
+p5
 
 #Building the model 6
 
@@ -256,6 +278,10 @@ featureImportance6 = varImp(model_6)
 
 predict_y_m6 = predict(model_6, test_m6)
 
+# Define lattice-based PDP (Partial depedence function)
+p6 <- partial(model_6, pred.var = c("bas_fat6", "BMI"), plot = TRUE, rug = TRUE)
+p6
+
 #Building the model 7
 
 train_m7 = dataset_model_7 %>% slice_head(n=train_lines)
@@ -266,6 +292,11 @@ featureImportance7 = varImp(model_7)
 #plotModel7 = varImpPlot(model_7,type=2)
 
 predict_y_m7 = predict(model_7, test_m7)
+
+# Define lattice-based PDP (Partial depedence function)
+p7 <- partial(model_7, pred.var = c("bas_fat7", "BMI"), plot = TRUE, rug = TRUE)
+p7
+
 
 #Building the model 8
 
@@ -278,6 +309,10 @@ featureImportance8 = varImp(model_8)
 
 predict_y_m8 = predict(model_8, test_m8)
 
+# Define lattice-based PDP (Partial depedence function)
+p8 <- partial(model_8, pred.var = c("bas_fat8", "BMI"), plot = TRUE, rug = TRUE)
+p8
+
 #Building the model 9
 
 train_m9 = dataset_model_9 %>% slice_head(n=train_lines)
@@ -288,6 +323,10 @@ featureImportance9 = varImp(model_9)
 #plotModel9 = varImpPlot(model_9,type=2)
 
 predict_y_m9 = predict(model_9, test_m9)
+
+# Define lattice-based PDP (Partial depedence function)
+p9 <- partial(model_9, pred.var = c("bas_fat9", "BMI"), plot = TRUE, rug = TRUE)
+p9
 
 #Building the model 10
 
@@ -300,6 +339,10 @@ featureImportance10 = varImp(model_10)
 
 predict_y_m10 = predict(model_10, test_m10)
 
+# Define lattice-based PDP (Partial depedence function)
+p10 <- partial(model_10, pred.var = c("bas_fat10", "BMI"), plot = TRUE, rug = TRUE)
+p10
+
 #Building the model 11
 
 train_m11 = dataset_model_11 %>% slice_head(n=train_lines)
@@ -310,6 +353,10 @@ featureImportance11 = varImp(model_11)
 #plotModel11 = varImpPlot(model_11,type=2)
 
 predict_y_m11 = predict(model_11, test_m11)
+
+# Define lattice-based PDP (Partial depedence function)
+p11 <- partial(model_11, pred.var = c("bas_fat11", "BMI"), plot = TRUE, rug = TRUE)
+p11
 
 #Building the model 12
 
@@ -322,6 +369,10 @@ featureImportance12 = varImp(model_12)
 
 predict_y_m12 = predict(model_12, test_m12)
 
+# Define lattice-based PDP (Partial depedence function)
+p12 <- partial(model_12, pred.var = c("bas_fat12", "BMI"), plot = TRUE, rug = TRUE)
+p12
+
 #Building the model 13
 
 train_m13 = dataset_model_13 %>% slice_head(n=train_lines)
@@ -332,6 +383,10 @@ featureImportance13 = varImp(model_13)
 #plotModel13 = varImpPlot(model_13,type=2)
 
 predict_y_m13 = predict(model_13, test_m13)
+
+# Define lattice-based PDP (Partial depedence function)
+p13 <- partial(model_13, pred.var = c("bas_fat13", "BMI"), plot = TRUE, rug = TRUE)
+p13
 
 #Building the model 14
 
@@ -344,6 +399,10 @@ featureImportance14 = varImp(model_14)
 
 predict_y_m14 = predict(model_14, test_m14)
 
+# Define lattice-based PDP (Partial depedence function)
+p14 <- partial(model_14, pred.var = c("bas_fat14", "BMI"), plot = TRUE, rug = TRUE)
+p14
+
 #Building the model 15
 
 train_m15 = dataset_model_15 %>% slice_head(n=train_lines)
@@ -354,6 +413,10 @@ featureImportance15 = varImp(model_15)
 #plotModel15 = varImpPlot(model_15,type=2)
 
 predict_y_m15 = predict(model_15, test_m15)
+
+# Define lattice-based PDP (Partial depedence function)
+p15 <- partial(model_15, pred.var = c("bas_fat15", "BMI"), plot = TRUE, rug = TRUE)
+p15
 
 #Building the model 16
 
@@ -366,6 +429,10 @@ featureImportance16 = varImp(model_16)
 
 predict_y_m16 = predict(model_16, test_m16)
 
+# Define lattice-based PDP (Partial depedence function)
+p16 <- partial(model_16, pred.var = c("bas_fat16", "BMI"), plot = TRUE, rug = TRUE)
+p16
+
 #Building the model 17
 
 train_m17 = dataset_model_17 %>% slice_head(n=train_lines)
@@ -376,6 +443,10 @@ featureImportance17 = varImp(model_17)
 #plotModel17 = varImpPlot(model_17,type=2)
 
 predict_y_m17 = predict(model_17, test_m17)
+
+# Define lattice-based PDP (Partial depedence function)
+p17 <- partial(model_17, pred.var = c("bas_fat17", "BMI"), plot = TRUE, rug = TRUE)
+p17
 
 #Building the model 18
 
@@ -388,6 +459,10 @@ featureImportance18 = varImp(model_18)
 
 predict_y_m18 = predict(model_18, test_m18)
 
+# Define lattice-based PDP (Partial depedence function)
+p18 <- partial(model_18, pred.var = c("bas_fat18", "BMI"), plot = TRUE, rug = TRUE)
+p18
+
 #Building the model 19
 
 train_m19 = dataset_model_19 %>% slice_head(n=train_lines)
@@ -399,6 +474,10 @@ featureImportance19 = varImp(model_19)
 
 predict_y_m19 = predict(model_19, test_m19)
 
+# Define lattice-based PDP (Partial depedence function)
+p19 <- partial(model_19, pred.var = c("bas_fat19", "BMI"), plot = TRUE, rug = TRUE)
+p19
+
 #Building the model 20
 
 train_m20 = dataset_model_20 %>% slice_head(n=train_lines)
@@ -409,6 +488,10 @@ featureImportance20 = varImp(model_20)
 #plotModel20 = varImpPlot(model_20,type=2)
 
 predict_y_m20 = predict(model_20, test_m20)
+
+# Define lattice-based PDP (Partial depedence function)
+p20 <- partial(model_20, pred.var = c("bas_fat20", "BMI"), plot = TRUE, rug = TRUE)
+p20
 
 # sum = 0.0
 
