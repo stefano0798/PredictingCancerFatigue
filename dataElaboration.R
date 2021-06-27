@@ -65,12 +65,10 @@ T4_hads = read_sav(path_T4_hads)
 T4_qol_contr = read_sav(path_T4_qol_contr)
 T4_qol_pt = read_sav(path_T4_qol_pt)
 
-# translate useful columns to English
+# translate useful columns to English, normalizing numeric data and changing the information format
 
 baseline = rename(baseline, age = ageatinclusion, height = Length_avg, fill_date = bdatalg, weight = bweight, weekly_alcohol = balcpw, drugs = drugs, regular_menstruation = bmenreg, pill = pill, times_pregnant = pregno, previous_hormon_treatment = bhormone, period_treatment = bhormdu)
 baseline_dataset = baseline %>% select(ID, height, age, fill_date, weight, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP) %>% mutate("BMI" = (weight/((height/100)^2))) %>% select(ID, age, fill_date, BMI, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, period_treatment, GROUP)
-
-# T3_hads_datainterest = T3_hads %>% select(RESPNO, DHADS1, DHADS3, DHADS5, DHADS13) %>% rename(t3_tense = DHADS1, t3_anxious = DHADS3, t3_worried = DHADS5, t3_panic = DHADS13)
 
 T1_hads = rbind(T1_hads, T1_hads_2)
 
@@ -165,6 +163,7 @@ dataset_with_fatigues = dataset_with_fatigues %>% drop_na("bas_fat1") %>% drop_n
 #delete rows with BMI equals to 0
 dataset_with_fatigues<-dataset_with_fatigues[!(dataset_with_fatigues$BMI<10),]
 
+#build the 20 datasets for the random forest model
 dataset_model_1 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat1, EFAT1)
 dataset_model_2 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat2, EFAT2)
 dataset_model_3 = dataset_with_fatigues %>% select(BMI, age, weekly_alcohol, drugs, regular_menstruation, pill, times_pregnant, previous_hormon_treatment, t1_tense, t1_anxious, t1_worried, t1_panic, Surgery, Chemotherapy, Hormonetherapy, Radiotherapy, bas_fat3, EFAT3)
@@ -195,15 +194,16 @@ test_lines = length(dataset_model_1$BMI) - train_lines
 
 train_m1 = dataset_model_1 %>% slice_head(n=train_lines)
 test_m1 = dataset_model_1 %>% slice_tail(n=test_lines)
-#train_m1$BMI <- unlist(train_m1$BMI)
 
 model_1 = randomForest(EFAT1~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat1, data=train_m1)
-featureImportance1 = varImp(model_1)
-#plotModel1 = varImpPlot(model_1,type=2)
 
+#calculate feature importance
+featureImportance1 = varImp(model_1)
+
+#performing the prediction
 predict_y_m1 = predict(model_1, test_m1)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p1 <- partial(model_1, pred.var = c("bas_fat1", "BMI"), plot = TRUE, rug = TRUE)
 p1
 
@@ -213,12 +213,13 @@ train_m2 = dataset_model_2 %>% slice_head(n=train_lines)
 test_m2 = dataset_model_2 %>% slice_tail(n=test_lines)
 
 model_2 = randomForest(EFAT2~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat2, data=train_m2)
+#calculate feature importance
 featureImportance2 = varImp(model_2)
-#plotModel2 = varImpPlot(model_2,type=2)
 
+#performing the prediction
 predict_y_m2 = predict(model_2, test_m2)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p2 <- partial(model_2, pred.var = c("bas_fat2", "BMI"), plot = TRUE, rug = TRUE)
 p2
 
@@ -228,12 +229,13 @@ train_m3 = dataset_model_3 %>% slice_head(n=train_lines)
 test_m3 = dataset_model_3 %>% slice_tail(n=test_lines)
 
 model_3 = randomForest(EFAT3~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat3, data=train_m3)
+#calculate feature importance
 featureImportance3 = varImp(model_3)
-#plotModel3 = varImpPlot(model_3,type=2)
 
+#performing the prediction
 predict_y_m3 = predict(model_3, test_m3)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p3 <- partial(model_3, pred.var = c("bas_fat3", "BMI"), plot = TRUE, rug = TRUE)
 p3
 
@@ -243,12 +245,13 @@ train_m4 = dataset_model_4 %>% slice_head(n=train_lines)
 test_m4 = dataset_model_4 %>% slice_tail(n=test_lines)
 
 model_4 = randomForest(EFAT4~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat4, data=train_m4)
+#calculate feature importance
 featureImportance4 = varImp(model_4)
-#plotModel4 = varImpPlot(model_4,type=2)
 
+#performing the prediction
 predict_y_m4 = predict(model_4, test_m4)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p4 <- partial(model_4, pred.var = c("bas_fat4", "BMI"), plot = TRUE, rug = TRUE)
 p4
 
@@ -258,12 +261,13 @@ train_m5 = dataset_model_5 %>% slice_head(n=train_lines)
 test_m5 = dataset_model_5 %>% slice_tail(n=test_lines)
 
 model_5 = randomForest(EFAT5~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat5, data=train_m5)
+#calculate feature importance
 featureImportance5 = varImp(model_5)
-#plotModel5 = varImpPlot(model_5,type=2)
 
+#performing the prediction
 predict_y_m5 = predict(model_5, test_m5)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p5 <- partial(model_5, pred.var = c("bas_fat5", "BMI"), plot = TRUE, rug = TRUE)
 p5
 
@@ -273,12 +277,13 @@ train_m6 = dataset_model_6 %>% slice_head(n=train_lines)
 test_m6 = dataset_model_6 %>% slice_tail(n=test_lines)
 
 model_6 = randomForest(EFAT6~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat6, data=train_m6)
+#calculate feature importance
 featureImportance6 = varImp(model_6)
-#plotModel6 = varImpPlot(model_6,type=2)
 
+#performing the prediction
 predict_y_m6 = predict(model_6, test_m6)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p6 <- partial(model_6, pred.var = c("bas_fat6", "BMI"), plot = TRUE, rug = TRUE)
 p6
 
@@ -288,12 +293,13 @@ train_m7 = dataset_model_7 %>% slice_head(n=train_lines)
 test_m7 = dataset_model_7 %>% slice_tail(n=test_lines)
 
 model_7 = randomForest(EFAT7~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat7, data=train_m7)
+#calculate feature importance
 featureImportance7 = varImp(model_7)
-#plotModel7 = varImpPlot(model_7,type=2)
 
+#performing the prediction
 predict_y_m7 = predict(model_7, test_m7)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p7 <- partial(model_7, pred.var = c("bas_fat7", "BMI"), plot = TRUE, rug = TRUE)
 p7
 
@@ -304,12 +310,13 @@ train_m8 = dataset_model_8 %>% slice_head(n=train_lines)
 test_m8 = dataset_model_8 %>% slice_tail(n=test_lines)
 
 model_8 = randomForest(EFAT8~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat8, data=train_m8)
+#calculate feature importance
 featureImportance8 = varImp(model_8)
-#plotModel8 = varImpPlot(model_8,type=2)
 
+#performing the prediction
 predict_y_m8 = predict(model_8, test_m8)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p8 <- partial(model_8, pred.var = c("bas_fat8", "BMI"), plot = TRUE, rug = TRUE)
 p8
 
@@ -319,12 +326,13 @@ train_m9 = dataset_model_9 %>% slice_head(n=train_lines)
 test_m9 = dataset_model_9 %>% slice_tail(n=test_lines)
 
 model_9 = randomForest(EFAT9~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat9, data=train_m9)
+#calculate feature importance
 featureImportance9 = varImp(model_9)
-#plotModel9 = varImpPlot(model_9,type=2)
 
+#performing the prediction
 predict_y_m9 = predict(model_9, test_m9)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p9 <- partial(model_9, pred.var = c("bas_fat9", "BMI"), plot = TRUE, rug = TRUE)
 p9
 
@@ -334,12 +342,13 @@ train_m10 = dataset_model_10 %>% slice_head(n=train_lines)
 test_m10 = dataset_model_10 %>% slice_tail(n=test_lines)
 
 model_10 = randomForest(EFAT10~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat10, data=train_m10)
+#calculate feature importance
 featureImportance10 = varImp(model_10)
-#plotModel10 = varImpPlot(model_10,type=2)
 
+#performing the prediction
 predict_y_m10 = predict(model_10, test_m10)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p10 <- partial(model_10, pred.var = c("bas_fat10", "BMI"), plot = TRUE, rug = TRUE)
 p10
 
@@ -349,12 +358,13 @@ train_m11 = dataset_model_11 %>% slice_head(n=train_lines)
 test_m11 = dataset_model_11 %>% slice_tail(n=test_lines)
 
 model_11 = randomForest(EFAT11~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat11, data=train_m11)
+#calculate feature importance
 featureImportance11 = varImp(model_11)
-#plotModel11 = varImpPlot(model_11,type=2)
 
+#performing the prediction
 predict_y_m11 = predict(model_11, test_m11)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p11 <- partial(model_11, pred.var = c("bas_fat11", "BMI"), plot = TRUE, rug = TRUE)
 p11
 
@@ -364,12 +374,13 @@ train_m12 = dataset_model_12 %>% slice_head(n=train_lines)
 test_m12 = dataset_model_12 %>% slice_tail(n=test_lines)
 
 model_12 = randomForest(EFAT12~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat12, data=train_m12)
+#calculate feature importance
 featureImportance12 = varImp(model_12)
-#plotModel12 = varImpPlot(model_12,type=2)
 
+#performing the prediction
 predict_y_m12 = predict(model_12, test_m12)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p12 <- partial(model_12, pred.var = c("bas_fat12", "BMI"), plot = TRUE, rug = TRUE)
 p12
 
@@ -379,12 +390,13 @@ train_m13 = dataset_model_13 %>% slice_head(n=train_lines)
 test_m13 = dataset_model_13 %>% slice_tail(n=test_lines)
 
 model_13 = randomForest(EFAT13~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat13, data=train_m13)
+#calculate feature importance
 featureImportance13 = varImp(model_13)
-#plotModel13 = varImpPlot(model_13,type=2)
 
+#performing the prediction
 predict_y_m13 = predict(model_13, test_m13)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p13 <- partial(model_13, pred.var = c("bas_fat13", "BMI"), plot = TRUE, rug = TRUE)
 p13
 
@@ -394,12 +406,13 @@ train_m14 = dataset_model_14 %>% slice_head(n=train_lines)
 test_m14 = dataset_model_14 %>% slice_tail(n=test_lines)
 
 model_14 = randomForest(EFAT14~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat14, data=train_m14)
+#calculate feature importance
 featureImportance14 = varImp(model_14)
-#plotModel14 = varImpPlot(model_14,type=2)
 
+#performing the prediction
 predict_y_m14 = predict(model_14, test_m14)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p14 <- partial(model_14, pred.var = c("bas_fat14", "BMI"), plot = TRUE, rug = TRUE)
 p14
 
@@ -409,12 +422,13 @@ train_m15 = dataset_model_15 %>% slice_head(n=train_lines)
 test_m15 = dataset_model_15 %>% slice_tail(n=test_lines)
 
 model_15 = randomForest(EFAT15~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat15, data=train_m15)
+#calculate feature importance
 featureImportance15 = varImp(model_15)
-#plotModel15 = varImpPlot(model_15,type=2)
 
+#performing the prediction
 predict_y_m15 = predict(model_15, test_m15)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p15 <- partial(model_15, pred.var = c("bas_fat15", "BMI"), plot = TRUE, rug = TRUE)
 p15
 
@@ -424,12 +438,13 @@ train_m16 = dataset_model_16 %>% slice_head(n=train_lines)
 test_m16 = dataset_model_16 %>% slice_tail(n=test_lines)
 
 model_16 = randomForest(EFAT16~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat16, data=train_m16)
+#calculate feature importance
 featureImportance16 = varImp(model_16)
-#plotModel16 = varImpPlot(model_16,type=2)
 
+#performing the prediction
 predict_y_m16 = predict(model_16, test_m16)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p16 <- partial(model_16, pred.var = c("bas_fat16", "BMI"), plot = TRUE, rug = TRUE)
 p16
 
@@ -439,12 +454,13 @@ train_m17 = dataset_model_17 %>% slice_head(n=train_lines)
 test_m17 = dataset_model_17 %>% slice_tail(n=test_lines)
 
 model_17 = randomForest(EFAT17~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat17, data=train_m17)
+#calculate feature importance
 featureImportance17 = varImp(model_17)
-#plotModel17 = varImpPlot(model_17,type=2)
 
+#performing the prediction
 predict_y_m17 = predict(model_17, test_m17)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p17 <- partial(model_17, pred.var = c("bas_fat17", "BMI"), plot = TRUE, rug = TRUE)
 p17
 
@@ -454,12 +470,13 @@ train_m18 = dataset_model_18 %>% slice_head(n=train_lines)
 test_m18 = dataset_model_18 %>% slice_tail(n=test_lines)
 
 model_18 = randomForest(EFAT18~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat18, data=train_m18)
+#calculate feature importance
 featureImportance18 = varImp(model_18)
-#plotModel18 = varImpPlot(model_18,type=2)
 
+#performing the prediction
 predict_y_m18 = predict(model_18, test_m18)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p18 <- partial(model_18, pred.var = c("bas_fat18", "BMI"), plot = TRUE, rug = TRUE)
 p18
 
@@ -469,12 +486,13 @@ train_m19 = dataset_model_19 %>% slice_head(n=train_lines)
 test_m19 = dataset_model_19 %>% slice_tail(n=test_lines)
 
 model_19 = randomForest(EFAT19~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat19, data=train_m19)
+#calculate feature importance
 featureImportance19 = varImp(model_19)
-#plotModel19 = varImpPlot(model_19,type=2)
 
+#performing the prediction
 predict_y_m19 = predict(model_19, test_m19)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p19 <- partial(model_19, pred.var = c("bas_fat19", "BMI"), plot = TRUE, rug = TRUE)
 p19
 
@@ -484,24 +502,19 @@ train_m20 = dataset_model_20 %>% slice_head(n=train_lines)
 test_m20 = dataset_model_20 %>% slice_tail(n=test_lines)
 
 model_20 = randomForest(EFAT20~BMI+age+weekly_alcohol+drugs+regular_menstruation+pill+times_pregnant+previous_hormon_treatment+t1_tense+t1_anxious+t1_worried+t1_panic+Surgery+Chemotherapy+Hormonetherapy+Radiotherapy+bas_fat20, data=train_m20)
+#calculate feature importance
 featureImportance20 = varImp(model_20)
-#plotModel20 = varImpPlot(model_20,type=2)
 
+#performing the prediction
 predict_y_m20 = predict(model_20, test_m20)
 
-# Define lattice-based PDP (Partial depedence function)
+# Define and plotting PDP (Partial depedence function)
 p20 <- partial(model_20, pred.var = c("bas_fat20", "BMI"), plot = TRUE, rug = TRUE)
 p20
 
 # sum = 0.0
 
-#MSE for EFAT1
-# for (index in seq(1, length(predict_y_m1))) {
-  # print(index)
-  # sum = as.double(sum) + as.double(abs(predict_y_m1[index] - as.double(test_m1$EFAT1[index])))
-# }
-
-#Compute General Fatigue prediction and Average Error
+#Compute General Fatigue prediction and Errors
 
 GeneralFatigueReal = predict_y_m1
 GeneralFatiguePrediction = predict_y_m1
@@ -532,7 +545,7 @@ GeneralFatiguePrediction
 array_MSE_GF
 MSE_GF = sum/(length(predict_y_m1))
 
-#Compute Physical Fatigue prediction and Average Error
+#Compute Physical Fatigue prediction and Errors
 
 PhysicalFatigueReal = predict_y_m1
 PhysicalFatiguePrediction = predict_y_m1
@@ -560,7 +573,7 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 MSE_PF = sum/(length(predict_y_m1))
 
-#Compute Reduced Activity prediction
+#Compute Reduced Activity prediction and Errors
 
 ReducedActivityReal = predict_y_m1
 ReducedActivityPrediction = predict_y_m1
@@ -588,7 +601,7 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 MSE_RA = sum/(length(predict_y_m1))
 
-#Compute Reduced Motivation prediction
+#Compute Reduced Motivation prediction and Errors
 ReducedMotivationReal = predict_y_m1
 ReducedMotivationPrediction = predict_y_m1
 
@@ -615,7 +628,7 @@ for (index in seq(1, length(predict_y_m1))) {
 }
 MSE_RM = sum/(length(predict_y_m1))
 
-#Compute Mental Fatigue prediction 
+#Compute Mental Fatigue prediction and Errors
 
 MentalFatigueReal = predict_y_m1
 MentalFatiguePrediction = predict_y_m1
@@ -708,8 +721,7 @@ errorFrequency
 MSE_frequency
 
 #plotting the importance of each feature
-avgImportance = c(
-)
+avgImportance = c()
 length(featureImportance1$Overall)
 for (index in seq(1, length(featureImportance1$Overall))) {
   avgImportance[index] = as.double(featureImportance1$Overall[index] + featureImportance2$Overall[index] + featureImportance3$Overall[index] + featureImportance4$Overall[index] +
